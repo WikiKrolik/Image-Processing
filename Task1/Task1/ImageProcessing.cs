@@ -104,7 +104,6 @@ namespace ImageProcessing
                     Color pixel = picture.GetPixel(x, picture.Height - y -1);
                     picture.SetPixel(x, y, pixel);
                     picture.SetPixel(x, picture.Height - y -1, pixelColor);
-
                 }
 
             }
@@ -121,7 +120,6 @@ namespace ImageProcessing
                     Color pixel = picture.GetPixel(picture.Width - x - 1, y);
                     picture.SetPixel(x, y, pixel);
                     picture.SetPixel(picture.Width - x - 1, y, pixelColor);
-
                 }
 
             }
@@ -145,6 +143,55 @@ namespace ImageProcessing
             return picture;
         }
 
+        // Linear interpolation
+        // Params: start, end, interpolating value
+        private static float Lerp(float s, float e, float t)
+        {
+            return s + (e - s) * t;
+        }
+        
+        // Bilinear interpolation
+        // Params: point x0y0, x1y0, x0y1, x1y1, interpolating value x, interpolating value y
+        private static float Blerp(float x00, float x10, float x01, float x11, float tx, float ty)
+        {
+            return Lerp(Lerp(x00, x10, tx), Lerp(x01, x11, tx), ty);
+        }
+
+        public Bitmap resizeImage(Bitmap picture, double scale)
+        {
+            int startingWidth = picture.Width;
+            int startingHeight = picture.Height;
+
+            int newWidth = (int)(picture.Width * scale);
+            int newHeight = (int)(picture.Height * scale);
+
+            Bitmap resizedPicture = new Bitmap(newWidth, newHeight,
+                          PixelFormat.Format24bppRgb);
+
+            for (int x = 0; x < newWidth; x++)
+            {
+                for (int y = 0; y < newHeight; y++)
+                {
+                    // Map scaled coordinates to original
+                    float originalX = ((float)x) / newWidth * (picture.Width - 1);
+                    float originalY = ((float)y) / newHeight * (picture.Height - 1);
+                    int originalIntX = (int)originalX;
+                    int originalIntY = (int)originalY;
+
+                    Color x00 = picture.GetPixel(originalIntX, originalIntY);
+                    Color x10 = picture.GetPixel(originalIntX + 1, originalIntY);
+                    Color x01 = picture.GetPixel(originalIntX, originalIntY + 1);
+                    Color x11 = picture.GetPixel(originalIntX + 1, originalIntY + 1);
+
+                    int r = (int)Blerp(x00.R, x10.R, x01.R, x11.R, originalX - originalIntX, originalY - originalIntY);
+                    int g = (int)Blerp(x00.G, x10.G, x01.G, x11.G, originalX - originalIntX, originalY - originalIntY);
+                    int b = (int)Blerp(x00.B, x10.B, x01.B, x11.B, originalX - originalIntX, originalY - originalIntY);
+                    Color calculatedColor = Color.FromArgb(r, g, b);
+                    resizedPicture.SetPixel(x, y, calculatedColor);
+                }
+            }
+
+            return resizedPicture;
+        }
     }
 }
-
