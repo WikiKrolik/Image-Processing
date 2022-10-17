@@ -10,9 +10,8 @@ namespace ImageProcessing
             var p = new ImageProcessing();
             string name = "C://test//lenac.bmp";
             Bitmap picture = p.LoadPicture(name);
-            picture = p.DiagonalFlip(picture);
+            picture = p.ModifyContrast(picture, 0.5);
             p.SavePicture(picture);
-
         }
 
     }
