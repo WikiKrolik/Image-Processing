@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ImageProcessing
 {
-    internal class BitmapProcessing
+    internal class ImageProcessing
     {
 
         public Bitmap LoadPicture(string name)
@@ -89,10 +89,44 @@ namespace ImageProcessing
 
                     picture.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
+            }
+            return picture;
+        }
+
+        public Bitmap VerticalFlip(Bitmap picture)
+        {
+            for (int x = 0; x < picture.Width; x++)
+            {
+                for (int y = 0; y < picture.Height / 2; y++)
+                {
+                    Color pixelColor = picture.GetPixel(x, y);
+                    Color pixel = picture.GetPixel(x, picture.Height - y -1);
+                    picture.SetPixel(x, y, pixel);
+                    picture.SetPixel(x, picture.Height - y -1, pixelColor);
+
+                }
 
             }
             return picture;
         }
+
+        public Bitmap HorizontalFlip(Bitmap picture)
+        {
+            for (int x = 0; x < picture.Width / 2; x++)
+            {
+                for (int y = 0; y < picture.Height; y++)
+                {
+                    Color pixelColor = picture.GetPixel(x, y);
+                    Color pixel = picture.GetPixel(picture.Width - x - 1, y);
+                    picture.SetPixel(x, y, pixel);
+                    picture.SetPixel(picture.Width - x - 1, y, pixelColor);
+
+                }
+
+            }
+            return picture;
+        }
+
     }
 }
 
