@@ -102,9 +102,9 @@ namespace ImageProcessing
                 for (int y = 0; y < picture.Height / 2; y++)
                 {
                     Color pixelColor = picture.GetPixel(x, y);
-                    Color pixel = picture.GetPixel(x, picture.Height - y -1);
+                    Color pixel = picture.GetPixel(x, picture.Height - y - 1);
                     picture.SetPixel(x, y, pixel);
-                    picture.SetPixel(x, picture.Height - y -1, pixelColor);
+                    picture.SetPixel(x, picture.Height - y - 1, pixelColor);
                 }
 
             }
@@ -129,9 +129,9 @@ namespace ImageProcessing
 
         public Bitmap DiagonalFlip(Bitmap picture)
         {
-            for (int x = 0; x < picture.Width ; x++)
+            for (int x = 0; x < picture.Width; x++)
             {
-                for (int y = 0; y < picture.Height/2 ; y++)
+                for (int y = 0; y < picture.Height / 2; y++)
                 {
                     Color pixelColor = picture.GetPixel(x, y);
                     Color pixel = picture.GetPixel(picture.Width - x - 1, picture.Height - y - 1);
@@ -150,7 +150,7 @@ namespace ImageProcessing
         {
             return s + (e - s) * t;
         }
-        
+
         // Bilinear interpolation (interpolate between two interpolations)
         // Params: point x0y0, x1y0, x0y1, x1y1, interpolating value x, interpolating value y
         private static float Blerp(float x00, float x10, float x01, float x11, float tx, float ty)
@@ -227,64 +227,81 @@ namespace ImageProcessing
             return meanSquareErorr / picture1.Width / picture1.Height;
         }
 
-        public Bitmap ArithmeticMean(Bitmap image)
+        public Color Median(Color[] arr)
+        {
+            Color[] sortedPNumbers = (Color[])arr.Clone();
+            Array.Sort(sortedPNumbers, (c1, c2) => { return c1.R + c1.G + c1.G - (c2.R + c2.G + c2.G); });
+
+            //get the median
+            int size = sortedPNumbers.Length;
+            int mid = size / 2;
+
+            if (sortedPNumbers.Length % 2 != 0)
+            {
+                return sortedPNumbers[mid];
+            }
+
+            return Color.FromArgb(
+                (sortedPNumbers[mid].R + sortedPNumbers[mid - 1].R) / 2,
+                (sortedPNumbers[mid].G + sortedPNumbers[mid - 1].G) / 2,
+                (sortedPNumbers[mid].B + sortedPNumbers[mid - 1].B) / 2);
+        }
+
+        public Bitmap MedianFilter(Bitmap image, int radius)
         {
             int w = image.Width;
             int h = image.Height;
-            BitmapData image_data = image.LockBits(
-                new Rectangle(0, 0, w, h),
-                ImageLockMode.ReadOnly,
-                PixelFormat.Format24bppRgb);
-            int bytes = image_data.Stride * image_data.Height;
-            byte[] buffer = new byte[bytes];
-            Marshal.Copy(image_data.Scan0, buffer, 0, bytes);
-            image.UnlockBits(image_data);
 
-            int r = 3;
-            int wres = w;
-            int hres = h;
-            Bitmap result_image = new Bitmap(wres, hres);
-            BitmapData result_data = result_image.LockBits(
-                new Rectangle(0, 0, wres, hres),
-                ImageLockMode.WriteOnly,
-                PixelFormat.Format24bppRgb);
-            int res_bytes = result_data.Stride * result_data.Height;
-            byte[] result = new byte[res_bytes];
+            Bitmap filteredImage = AddPaddding(image, 0);
 
-            for (int x = r; x < w - r; x++)
+            for (int x = radius; x < w - radius; x++)
             {
-                for (int y = r; y < h - r; y++)
+                for (int y = radius; y < h - radius; y++)
                 {
-                    int pixel_location = x * 3 + y * image_data.Stride;
-                    int res_pixel_loc = (x - r) * 3 + (y - r) * result_data.Stride;
-                    double[] mean = new double[3];
+                    Color[] filterMask = new Color[(2 * radius + 1) * (2 * radius + 1)];
 
-                    for (int kx = -r; kx <= r; kx++)
+                    int it = 0;
+
+                    for (int fmx = -radius; fmx <= radius; fmx++)
                     {
-                        for (int ky = -r; ky <= r; ky++)
+                        for (int fmy = -radius; fmy <= radius; fmy++)
                         {
-                            int kernel_pixel = pixel_location + kx * 3 + ky * image_data.Stride;
-
-                            for (int c = 0; c < 3; c++)
-                            {
-                                mean[c] += buffer[kernel_pixel + c] / Math.Pow(2 * r + 1, 2);
-                            }
+                            filterMask[it++] = filteredImage.GetPixel(x + fmx, y + fmy);
                         }
                     }
 
-                    for (int c = 0; c < 3; c++)
-                    {
-                        result[res_pixel_loc + c] = (byte)mean[c];
-                    }
+                    filteredImage.SetPixel(x, y, Median(filterMask));
                 }
             }
 
-            Marshal.Copy(result, 0, result_data.Scan0, res_bytes);
-            result_image.UnlockBits(result_data);
-            return result_image;
+            return filteredImage;
         }
 
+        public Bitmap AddPaddding(Bitmap picture, int border)
+        {
+            int newWidth = picture.Width + 2 * border;
+            int newHeight = picture.Height + 2 * border;
+            Bitmap newPicture = new Bitmap(newWidth, newHeight);
 
+            for (int x = 0; x < newWidth; x++)
+            {
+                for (int y = 0; y < newHeight; y++)
+                {
+                    newPicture.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                }
+            }
 
+            for (int x = 0; x < picture.Width; x++)
+            {
+                for (int y = 0; y < picture.Height; y++)
+                {
+                    newPicture.SetPixel(x + border, y + border, picture.GetPixel(x, y));
+                }
+            }
+
+            return newPicture;
+        }
+
+        
     }
 }
