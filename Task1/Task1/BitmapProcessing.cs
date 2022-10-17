@@ -51,7 +51,7 @@ namespace ImageProcessing
             return picture;
         }
 
-        /*public Bitmap ModifyContrast(Bitmap picture, int contrast)
+        public Bitmap ModifyContrast(Bitmap picture, int contrast)
         {
             for (int x = 0; x < picture.Width; x++)
             {
@@ -73,7 +73,26 @@ namespace ImageProcessing
 
             }
             return picture;
-        }*/
+        }
+
+        public Bitmap Negative(Bitmap picture)
+        {
+            for (int x = 0; x < picture.Width; x++)
+            {
+                for (int y = 0; y < picture.Height; y++)
+                {
+                    Color pixelColor = picture.GetPixel(x, y);
+
+                    int r = 255 - pixelColor.R;
+                    int g = 255 - pixelColor.G;
+                    int b = 255 - pixelColor.B;
+
+                    picture.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
+                }
+
+            }
+            return picture;
+        }
     }
 }
 

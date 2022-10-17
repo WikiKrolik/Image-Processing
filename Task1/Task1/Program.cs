@@ -10,7 +10,7 @@ namespace ImageProcessing
             var p = new BitmapProcessing();
             string name = "C://test//lenac_small.bmp";
             Bitmap picture = p.LoadPicture(name);
-            picture = p.ModifyBrightness(picture, 50);
+            picture = p.Negative(picture);
             p.SavePicture(picture);
 
         }
