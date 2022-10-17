@@ -229,22 +229,34 @@ namespace ImageProcessing
 
         public Color Median(Color[] arr)
         {
-            Color[] sortedPNumbers = (Color[])arr.Clone();
-            Array.Sort(sortedPNumbers, (c1, c2) => { return c1.R + c1.G + c1.G - (c2.R + c2.G + c2.G); });
+            int[] red = new int[arr.Length];
+            int[] green = new int[arr.Length];
+            int[] blue = new int[arr.Length];
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                red[i] = arr[i].R;
+                green[i] = arr[i].G;
+                blue[i] = arr[i].B;
+            }
+
+            Array.Sort(red);
+            Array.Sort(green);
+            Array.Sort(blue);
 
             //get the median
-            int size = sortedPNumbers.Length;
+            int size = arr.Length;
             int mid = size / 2;
 
-            if (sortedPNumbers.Length % 2 != 0)
+            if (arr.Length % 2 != 0)
             {
-                return sortedPNumbers[mid];
+                return Color.FromArgb(red[mid], green[mid], blue[mid]);
             }
 
             return Color.FromArgb(
-                (sortedPNumbers[mid].R + sortedPNumbers[mid - 1].R) / 2,
-                (sortedPNumbers[mid].G + sortedPNumbers[mid - 1].G) / 2,
-                (sortedPNumbers[mid].B + sortedPNumbers[mid - 1].B) / 2);
+                (red[mid] + red[mid - 1]) / 2,
+                (green[mid] + green[mid - 1]) / 2,
+                (blue[mid] + blue[mid - 1]) / 2);
         }
 
         public Bitmap MedianFilter(Bitmap image, int radius)
@@ -301,7 +313,5 @@ namespace ImageProcessing
 
             return newPicture;
         }
-
-        
     }
 }
