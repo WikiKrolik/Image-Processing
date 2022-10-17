@@ -11,6 +11,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace ImageProcessing
 {
@@ -159,6 +160,11 @@ namespace ImageProcessing
 
         public Bitmap resizeImage(Bitmap picture, double scale)
         {
+            if (scale == 1)
+            {
+                return picture;
+            }
+
             int startingWidth = picture.Width;
             int startingHeight = picture.Height;
 
@@ -193,5 +199,92 @@ namespace ImageProcessing
 
             return resizedPicture;
         }
+
+        public float meanSquareError(Bitmap picture1, Bitmap picture2)
+        {
+            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            {
+                return -1;
+            }
+
+            float meanSquareErorr = 0;
+
+            for (int x = 0; x < picture1.Width; x++)
+            {
+                for (int y = 0; y < picture1.Height; y++)
+                {
+                    Color pixel1 = picture1.GetPixel(x, y);
+                    Color pixel2 = picture2.GetPixel(x, y);
+
+                    float redDif = pixel1.R - pixel2.R;
+                    float greenDif = pixel1.G - pixel2.G;
+                    float blueDif = pixel1.B - pixel2.B;
+
+                    meanSquareErorr += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
+                }
+            }
+
+            return meanSquareErorr / picture1.Width / picture1.Height;
+        }
+
+        public Bitmap ArithmeticMean(Bitmap image)
+        {
+            int w = image.Width;
+            int h = image.Height;
+            BitmapData image_data = image.LockBits(
+                new Rectangle(0, 0, w, h),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int bytes = image_data.Stride * image_data.Height;
+            byte[] buffer = new byte[bytes];
+            Marshal.Copy(image_data.Scan0, buffer, 0, bytes);
+            image.UnlockBits(image_data);
+
+            int r = 3;
+            int wres = w;
+            int hres = h;
+            Bitmap result_image = new Bitmap(wres, hres);
+            BitmapData result_data = result_image.LockBits(
+                new Rectangle(0, 0, wres, hres),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format24bppRgb);
+            int res_bytes = result_data.Stride * result_data.Height;
+            byte[] result = new byte[res_bytes];
+
+            for (int x = r; x < w - r; x++)
+            {
+                for (int y = r; y < h - r; y++)
+                {
+                    int pixel_location = x * 3 + y * image_data.Stride;
+                    int res_pixel_loc = (x - r) * 3 + (y - r) * result_data.Stride;
+                    double[] mean = new double[3];
+
+                    for (int kx = -r; kx <= r; kx++)
+                    {
+                        for (int ky = -r; ky <= r; ky++)
+                        {
+                            int kernel_pixel = pixel_location + kx * 3 + ky * image_data.Stride;
+
+                            for (int c = 0; c < 3; c++)
+                            {
+                                mean[c] += buffer[kernel_pixel + c] / Math.Pow(2 * r + 1, 2);
+                            }
+                        }
+                    }
+
+                    for (int c = 0; c < 3; c++)
+                    {
+                        result[res_pixel_loc + c] = (byte)mean[c];
+                    }
+                }
+            }
+
+            Marshal.Copy(result, 0, result_data.Scan0, res_bytes);
+            result_image.UnlockBits(result_data);
+            return result_image;
+        }
+
+
+
     }
 }
