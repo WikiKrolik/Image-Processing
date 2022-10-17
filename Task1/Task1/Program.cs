@@ -8,9 +8,9 @@ namespace ImageProcessing
         static void Main(string[] args)
         {
             var p = new ImageProcessing();
-            string name = "C://test//lenac_small.bmp";
+            string name = "C://test//lenac.bmp";
             Bitmap picture = p.LoadPicture(name);
-            picture = p.VerticalFlip(picture);
+            picture = p.DiagonalFlip(picture);
             p.SavePicture(picture);
 
         }

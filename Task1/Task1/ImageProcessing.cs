@@ -127,6 +127,23 @@ namespace ImageProcessing
             return picture;
         }
 
+        public Bitmap DiagonalFlip(Bitmap picture)
+        {
+            for (int x = 0; x < picture.Width ; x++)
+            {
+                for (int y = 0; y < picture.Height/2 ; y++)
+                {
+                    Color pixelColor = picture.GetPixel(x, y);
+                    Color pixel = picture.GetPixel(picture.Width - x - 1, picture.Height - y - 1);
+                    picture.SetPixel(x, y, pixel);
+                    picture.SetPixel(picture.Width - x - 1, picture.Height - y - 1, pixelColor);
+
+                }
+
+            }
+            return picture;
+        }
+
     }
 }
 
