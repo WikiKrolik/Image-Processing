@@ -10,7 +10,7 @@ namespace ImageProcessing
             var p = new ImageProcessing();
             string name = "C://test//lenac.bmp";
             Bitmap picture = p.LoadPicture(name);
-            picture = p.resizeImage(picture, 2);
+            picture = p.resizeImage(picture, 8);
             p.SavePicture(picture);
         }
 

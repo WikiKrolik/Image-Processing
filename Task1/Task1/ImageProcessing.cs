@@ -150,7 +150,7 @@ namespace ImageProcessing
             return s + (e - s) * t;
         }
         
-        // Bilinear interpolation
+        // Bilinear interpolation (interpolate between two interpolations)
         // Params: point x0y0, x1y0, x0y1, x1y1, interpolating value x, interpolating value y
         private static float Blerp(float x00, float x10, float x01, float x11, float tx, float ty)
         {
