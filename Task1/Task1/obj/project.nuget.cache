@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "pSy43wvvvciZNLp5SIHQhInXALe+WU1E+tisKhezKNNom+9YMjwnZ1LEctZ7Jsr4g27k0k/od5dz+mdHaGSVNA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\would-be-it\\Desktop\\Repo\\Image-Processing\\Task1\\Task1\\Task1.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\would-be-it\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\would-be-it\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
