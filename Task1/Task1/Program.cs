@@ -14,8 +14,15 @@ namespace ImageProcessing
             // picture = p.resizeImage(picture, 1);
             // p.SavePicture(picture);
 
-            Bitmap picture1 = p.LoadPicture("C://test//lenna512noise.png");
-            p.SavePicture(p.MedianFilter(picture1, 1));
+            Bitmap picOriginal = p.LoadPicture("C://test//lenna512.png");
+            Bitmap picNoise = p.LoadPicture("C://test//lenna512noise.png");
+            Bitmap picFiltered = p.MedianFilter(picNoise, 1);
+
+            Console.WriteLine(p.maximumDifference(picOriginal, picNoise));
+            Console.WriteLine(p.maximumDifference(picOriginal, picFiltered));
+
+            Console.WriteLine(p.meanSquareError(picOriginal, picNoise));
+            Console.WriteLine(p.meanSquareError(picOriginal, picFiltered));
         }
     }
 }

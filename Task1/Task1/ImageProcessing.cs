@@ -316,5 +316,38 @@ namespace ImageProcessing
 
             return newPicture;
         }
+
+        public float maximumDifference(Bitmap picture1, Bitmap picture2)
+        {
+            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            {
+                return -1;
+            }
+
+            float maximumDifference = -1;
+
+            for (int x = 0; x < picture1.Width; x++)
+            {
+                for (int y = 0; y < picture1.Height; y++)
+                {
+                    Color pixel1 = picture1.GetPixel(x, y);
+                    Color pixel2 = picture2.GetPixel(x, y);
+
+                    float redDif = pixel1.R - pixel2.R;
+                    float greenDif = pixel1.G - pixel2.G;
+                    float blueDif = pixel1.B - pixel2.B;
+
+                    float tempDifference = (redDif + greenDif + blueDif) / 3;
+
+                    if (tempDifference > maximumDifference)
+                    {
+                        maximumDifference = tempDifference;
+                    }
+
+                }
+            }
+
+            return maximumDifference;
+        }
     }
 }
