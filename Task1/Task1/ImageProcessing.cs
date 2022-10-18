@@ -266,23 +266,26 @@ namespace ImageProcessing
 
             Bitmap filteredImage = AddPaddding(image, 0);
 
-            for (int x = radius; x < w - radius; x++)
+            for (int x = 0; x < w; x++)
             {
-                for (int y = radius; y < h - radius; y++)
+                for (int y = 0; y < h; y++)
                 {
-                    Color[] filterMask = new Color[(2 * radius + 1) * (2 * radius + 1)];
-
-                    int it = 0;
+                    List<Color> filterMask = new List<Color>();
 
                     for (int fmx = -radius; fmx <= radius; fmx++)
                     {
                         for (int fmy = -radius; fmy <= radius; fmy++)
                         {
-                            filterMask[it++] = filteredImage.GetPixel(x + fmx, y + fmy);
+                            if (x + fmx >= h || y + fmy >= h || x + fmx < 0 || y + fmy < 0)
+                            {
+                                continue;
+                            }
+
+                            filterMask.Add(filteredImage.GetPixel(x + fmx, y + fmy));
                         }
                     }
 
-                    filteredImage.SetPixel(x, y, Median(filterMask));
+                    filteredImage.SetPixel(x, y, Median(filterMask.ToArray()));
                 }
             }
 
