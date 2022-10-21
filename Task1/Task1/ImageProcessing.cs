@@ -333,9 +333,9 @@ namespace ImageProcessing
                     Color pixel1 = picture1.GetPixel(x, y);
                     Color pixel2 = picture2.GetPixel(x, y);
 
-                    float redDif = pixel1.R - pixel2.R;
-                    float greenDif = pixel1.G - pixel2.G;
-                    float blueDif = pixel1.B - pixel2.B;
+                    float redDif = Math.Abs(pixel1.R - pixel2.R);
+                    float greenDif = Math.Abs(pixel1.G - pixel2.G);
+                    float blueDif = Math.Abs(pixel1.B - pixel2.B);
 
                     float tempDifference = (redDif + greenDif + blueDif) / 3;
 
@@ -343,7 +343,6 @@ namespace ImageProcessing
                     {
                         maximumDifference = tempDifference;
                     }
-
                 }
             }
 
