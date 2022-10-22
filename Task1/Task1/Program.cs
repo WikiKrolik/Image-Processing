@@ -7,6 +7,7 @@ namespace ImageProcessing
     {
         static void Main(string[] args)
         {
+            CommandProcessing.start();
             var p = new ImageProcessing();
             string name = "C://test//lenac.bmp";
             Bitmap picture = p.LoadPicture(name);

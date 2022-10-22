@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 
 namespace ImageProcessing
 {
     internal class ImageProcessing
     {
+        // -- HELPERS --
+        // Linear interpolation
+        // Params: start, end, interpolating value
+        private static float Lerp(float s, float e, float t)
+        {
+            return s + (e - s) * t;
+        }
+
+        // Bilinear interpolation (interpolate between two interpolations)
+        // Params: point x0y0, x1y0, x0y1, x1y1, interpolating value x, interpolating value y
+        private static float Blerp(float x00, float x10, float x01, float x11, float tx, float ty)
+        {
+            return Lerp(Lerp(x00, x10, tx), Lerp(x01, x11, tx), ty);
+        }
 
         public Bitmap LoadPicture(string name)
         {
@@ -29,6 +31,63 @@ namespace ImageProcessing
             picture.Save("C://test//Light.png", ImageFormat.Png);
         }
 
+        public Bitmap AddPaddding(Bitmap picture, int border)
+        {
+            int newWidth = picture.Width + 2 * border;
+            int newHeight = picture.Height + 2 * border;
+            Bitmap newPicture = new Bitmap(newWidth, newHeight);
+
+            for (int x = 0; x < newWidth; x++)
+            {
+                for (int y = 0; y < newHeight; y++)
+                {
+                    newPicture.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                }
+            }
+
+            for (int x = 0; x < picture.Width; x++)
+            {
+                for (int y = 0; y < picture.Height; y++)
+                {
+                    newPicture.SetPixel(x + border, y + border, picture.GetPixel(x, y));
+                }
+            }
+
+            return newPicture;
+        }
+
+        public Color Median(Color[] arr)
+        {
+            int[] red = new int[arr.Length];
+            int[] green = new int[arr.Length];
+            int[] blue = new int[arr.Length];
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                red[i] = arr[i].R;
+                green[i] = arr[i].G;
+                blue[i] = arr[i].B;
+            }
+
+            Array.Sort(red);
+            Array.Sort(green);
+            Array.Sort(blue);
+
+            int size = arr.Length;
+            int mid = size / 2;
+
+            if (arr.Length % 2 != 0)
+            {
+                return Color.FromArgb(red[mid], green[mid], blue[mid]);
+            }
+
+            return Color.FromArgb(
+                (red[mid] + red[mid - 1]) / 2,
+                (green[mid] + green[mid - 1]) / 2,
+                (blue[mid] + blue[mid - 1]) / 2);
+        }
+
+        // -- BASIC OPERATIONS --
         public Bitmap ModifyBrightness(Bitmap picture, int brightness)
         {
             for (int x = 0; x < picture.Width; x++)
@@ -72,8 +131,8 @@ namespace ImageProcessing
 
                     picture.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
-
             }
+            
             return picture;
         }
 
@@ -92,6 +151,24 @@ namespace ImageProcessing
                     picture.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
             }
+
+            return picture;
+        }
+
+        // -- GEOMETRIC OPERATIONS --
+        public Bitmap HorizontalFlip(Bitmap picture)
+        {
+            for (int x = 0; x < picture.Width / 2; x++)
+            {
+                for (int y = 0; y < picture.Height; y++)
+                {
+                    Color pixelColor = picture.GetPixel(x, y);
+                    Color pixel = picture.GetPixel(picture.Width - x - 1, y);
+                    picture.SetPixel(x, y, pixel);
+                    picture.SetPixel(picture.Width - x - 1, y, pixelColor);
+                }
+            }
+
             return picture;
         }
 
@@ -106,24 +183,8 @@ namespace ImageProcessing
                     picture.SetPixel(x, y, pixel);
                     picture.SetPixel(x, picture.Height - y - 1, pixelColor);
                 }
-
             }
-            return picture;
-        }
 
-        public Bitmap HorizontalFlip(Bitmap picture)
-        {
-            for (int x = 0; x < picture.Width / 2; x++)
-            {
-                for (int y = 0; y < picture.Height; y++)
-                {
-                    Color pixelColor = picture.GetPixel(x, y);
-                    Color pixel = picture.GetPixel(picture.Width - x - 1, y);
-                    picture.SetPixel(x, y, pixel);
-                    picture.SetPixel(picture.Width - x - 1, y, pixelColor);
-                }
-
-            }
             return picture;
         }
 
@@ -137,25 +198,10 @@ namespace ImageProcessing
                     Color pixel = picture.GetPixel(picture.Width - x - 1, picture.Height - y - 1);
                     picture.SetPixel(x, y, pixel);
                     picture.SetPixel(picture.Width - x - 1, picture.Height - y - 1, pixelColor);
-
                 }
-
             }
+
             return picture;
-        }
-
-        // Linear interpolation
-        // Params: start, end, interpolating value
-        private static float Lerp(float s, float e, float t)
-        {
-            return s + (e - s) * t;
-        }
-
-        // Bilinear interpolation (interpolate between two interpolations)
-        // Params: point x0y0, x1y0, x0y1, x1y1, interpolating value x, interpolating value y
-        private static float Blerp(float x00, float x10, float x01, float x11, float tx, float ty)
-        {
-            return Lerp(Lerp(x00, x10, tx), Lerp(x01, x11, tx), ty);
         }
 
         public Bitmap resizeImage(Bitmap picture, double scale)
@@ -200,65 +246,7 @@ namespace ImageProcessing
             return resizedPicture;
         }
 
-        public float meanSquareError(Bitmap picture1, Bitmap picture2)
-        {
-            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
-            {
-                return -1;
-            }
-
-            float meanSquareErorr = 0;
-
-            for (int x = 0; x < picture1.Width; x++)
-            {
-                for (int y = 0; y < picture1.Height; y++)
-                {
-                    Color pixel1 = picture1.GetPixel(x, y);
-                    Color pixel2 = picture2.GetPixel(x, y);
-
-                    float redDif = pixel1.R - pixel2.R;
-                    float greenDif = pixel1.G - pixel2.G;
-                    float blueDif = pixel1.B - pixel2.B;
-
-                    meanSquareErorr += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
-                }
-            }
-
-            return meanSquareErorr / picture1.Width / picture1.Height;
-        }
-
-        public Color Median(Color[] arr)
-        {
-            int[] red = new int[arr.Length];
-            int[] green = new int[arr.Length];
-            int[] blue = new int[arr.Length];
-
-            for (int i = 0; i < arr.Length; i++)
-            {
-                red[i] = arr[i].R;
-                green[i] = arr[i].G;
-                blue[i] = arr[i].B;
-            }
-
-            Array.Sort(red);
-            Array.Sort(green);
-            Array.Sort(blue);
-
-            //get the median
-            int size = arr.Length;
-            int mid = size / 2;
-
-            if (arr.Length % 2 != 0)
-            {
-                return Color.FromArgb(red[mid], green[mid], blue[mid]);
-            }
-
-            return Color.FromArgb(
-                (red[mid] + red[mid - 1]) / 2,
-                (green[mid] + green[mid - 1]) / 2,
-                (blue[mid] + blue[mid - 1]) / 2);
-        }
-
+        // -- NOISE REMOVAL --
         public Bitmap MedianFilter(Bitmap image, int radius)
         {
             int w = image.Width;
@@ -292,29 +280,32 @@ namespace ImageProcessing
             return filteredImage;
         }
 
-        public Bitmap AddPaddding(Bitmap picture, int border)
+        // -- ERROR ANALYSIS --
+        public float meanSquareError(Bitmap picture1, Bitmap picture2)
         {
-            int newWidth = picture.Width + 2 * border;
-            int newHeight = picture.Height + 2 * border;
-            Bitmap newPicture = new Bitmap(newWidth, newHeight);
-
-            for (int x = 0; x < newWidth; x++)
+            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
             {
-                for (int y = 0; y < newHeight; y++)
+                return -1;
+            }
+
+            float meanSquareErorr = 0;
+
+            for (int x = 0; x < picture1.Width; x++)
+            {
+                for (int y = 0; y < picture1.Height; y++)
                 {
-                    newPicture.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                    Color pixel1 = picture1.GetPixel(x, y);
+                    Color pixel2 = picture2.GetPixel(x, y);
+
+                    float redDif = pixel1.R - pixel2.R;
+                    float greenDif = pixel1.G - pixel2.G;
+                    float blueDif = pixel1.B - pixel2.B;
+
+                    meanSquareErorr += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
                 }
             }
 
-            for (int x = 0; x < picture.Width; x++)
-            {
-                for (int y = 0; y < picture.Height; y++)
-                {
-                    newPicture.SetPixel(x + border, y + border, picture.GetPixel(x, y));
-                }
-            }
-
-            return newPicture;
+            return meanSquareErorr / picture1.Width / picture1.Height;
         }
 
         public float maximumDifference(Bitmap picture1, Bitmap picture2)
