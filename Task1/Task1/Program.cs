@@ -8,7 +8,11 @@ namespace ImageProcessing
         static void Main(string[] args)
         {
             CommandProcessing.start();
+
+            /* 
             var p = new ImageProcessing();
+            
+
             string name = "C://test//lenac.bmp";
             Bitmap picture = p.LoadPicture(name);
 
@@ -24,6 +28,7 @@ namespace ImageProcessing
 
             Console.WriteLine(p.meanSquareError(picOriginal, picNoise));
             Console.WriteLine(p.meanSquareError(picOriginal, picFiltered));
+            */
         }
     }
 }

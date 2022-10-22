@@ -26,9 +26,9 @@ namespace ImageProcessing
             return picture;
         }
 
-        public void SavePicture(Bitmap picture)
+        public void SavePicture(Bitmap picture, String path)
         {
-            picture.Save("C://test//Light.png", ImageFormat.Png);
+            picture.Save(path, ImageFormat.Png);
         }
 
         public Bitmap AddPaddding(Bitmap picture, int border)
@@ -108,12 +108,13 @@ namespace ImageProcessing
                 }
 
             }
+
             return picture;
         }
 
         // 0 < contrast < 1 for less contrast
         // contrast > 1 for more contrast
-        public Bitmap ModifyContrast(Bitmap picture, double contrast)
+        public Bitmap ModifyContrast(Bitmap picture, float contrast) 
         {
             for (int x = 0; x < picture.Width; x++)
             {
@@ -204,7 +205,7 @@ namespace ImageProcessing
             return picture;
         }
 
-        public Bitmap resizeImage(Bitmap picture, double scale)
+        public Bitmap Resize(Bitmap picture, float scale)
         {
             if (scale == 1)
             {
