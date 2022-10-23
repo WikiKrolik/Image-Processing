@@ -281,6 +281,40 @@ namespace ImageProcessing
             return filteredImage;
         }
 
+        /*  public Bitmap HarmonicFilter(Bitmap picture, int filterSizeHeight, int filterSizeWidth)
+        {
+            int w = picture.Width;
+            int h = picture.Height;
+
+
+            int a = 0;
+           
+
+            for (int x = 1; x < w - 1; x++)
+            {
+                for (int y = 1; y < h - 1; y++)
+                {
+                    // creating masks
+                    Color[] R = new Color[filterSizeWidth * filterSizeHeight];
+                    Color[] G = new Color[filterSizeWidth * filterSizeHeight];
+                    Color[] B = new Color[filterSizeWidth * filterSizeHeight];
+
+                    for (int i = x - filterSizeWidth/2; i < x + filterSizeWidth/ + filterSizeHeight % 2; i++)
+                    {
+                        for (int j = y - filterSizeHeight / 2; j < y + filterSizeHeight / 2 + filterSizeHeight%2; i++)
+                        {
+                            R[a] = picture.GetPixel(i, j);
+                            G[a] = picture.GetPixel(i, j);
+                            B[a] = picture.GetPixel(i, j);
+                        }
+                    }
+
+                    Color newPixel = ((filterSizeHeight * filterSizeHeight)/(red), (filterSizeHeight * filterSizeHeight)/ green, (filterSizeHeight * filterSizeHeight) / blue)
+                    picture.SetPixel(x, y, PixelFormat);
+                }
+            }
+        }*/
+
         // -- ERROR ANALYSIS --
         public float meanSquareError(Bitmap picture1, Bitmap picture2)
         {
