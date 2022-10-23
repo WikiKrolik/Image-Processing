@@ -309,8 +309,47 @@ namespace ImageProcessing
             return meanSquareErorr / picture1.Width / picture1.Height;
         }
 
+        public float PeakMeanSquareError(Bitmap picture1, Bitmap picture2)
+        {
+            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            {
+                return -1;
+            }
+
+            float maxR = 0;
+            float maxG = 0;
+            float maxB = 0;
+            float peakMeanSquareErorr = 0;
+
+            for (int i = 0; i < picture1.Width; i++)
+            {
+                for (int j = 0; j < picture1.Height; j++)
+                {
+                    Color pixel1 = picture1.GetPixel(j, i);
+                    Color pixel2 = picture2.GetPixel(j, i);
+
+                    if (pixel1.R > maxR)
+                        maxR = pixel1.R;
+                    if (pixel1.G > maxG)
+                        maxG = pixel1.G;
+                    if (pixel1.B > maxB)
+                        maxB = pixel1.B;
+
+                    float redDif = pixel1.R - pixel2.R;
+                    float greenDif = pixel1.G - pixel2.G;
+                    float blueDif = pixel1.B - pixel2.B;
+
+                    peakMeanSquareErorr += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
+                }
+            }
+            float result = peakMeanSquareErorr / (picture1.Width / picture1.Height * ((maxR + maxG + maxB) / 3) * ((maxR + maxG + maxB) / 3));
+
+            return result;
+        }
+
         public float maximumDifference(Bitmap picture1, Bitmap picture2)
         {
+
             if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
             {
                 return -1;

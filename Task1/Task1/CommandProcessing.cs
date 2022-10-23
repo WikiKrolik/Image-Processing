@@ -217,7 +217,10 @@ US: 1.4 (dot)";
 
                     break;
                 case "--pmse":
-                    Console.WriteLine("Not implemented");
+                    inputPicture1 = p.LoadPicture(arguments[2]);
+                    inputPicture2 = p.LoadPicture(arguments[3]);
+
+                    Console.WriteLine($"Peak mean square error: {p.PeakMeanSquareError(inputPicture1, inputPicture2)}");
 
                     break;
                 case "--snr":
