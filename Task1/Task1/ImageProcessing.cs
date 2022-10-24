@@ -281,39 +281,46 @@ namespace ImageProcessing
             return filteredImage;
         }
 
-        /*  public Bitmap HarmonicFilter(Bitmap picture, int filterSizeHeight, int filterSizeWidth)
-        {
+          public Bitmap HarmonicFilter(Bitmap picture, int filterSizeWidth, int filterSizeHeight )
+          {
             int w = picture.Width;
             int h = picture.Height;
 
-
-            int a = 0;
-           
-
-            for (int x = 1; x < w - 1; x++)
+            for (int x = 0; x < w; x++)
             {
-                for (int y = 1; y < h - 1; y++)
+                for (int y = 0; y < h; y++)
                 {
-                    // creating masks
-                    Color[] R = new Color[filterSizeWidth * filterSizeHeight];
-                    Color[] G = new Color[filterSizeWidth * filterSizeHeight];
-                    Color[] B = new Color[filterSizeWidth * filterSizeHeight];
+                    float red = 0f;
+                    float green = 0f;
+                    float blue = 0f;
 
-                    for (int i = x - filterSizeWidth/2; i < x + filterSizeWidth/ + filterSizeHeight % 2; i++)
+                    for (int i = x - filterSizeWidth / 2; i < x + filterSizeWidth - filterSizeWidth / 2; i++)
                     {
-                        for (int j = y - filterSizeHeight / 2; j < y + filterSizeHeight / 2 + filterSizeHeight%2; i++)
+                        if (i < 0 || i >= picture.Width) continue;
+                        for (int j = y - filterSizeHeight / 2; j < y + filterSizeHeight - filterSizeHeight / 2; j++)
                         {
-                            R[a] = picture.GetPixel(i, j);
-                            G[a] = picture.GetPixel(i, j);
-                            B[a] = picture.GetPixel(i, j);
+                            if (j < 0 || j >= picture.Height) continue;
+                            Color color = picture.GetPixel(i, j);
+                            if (color.R <= 0 || color.G <= 0 || color.B <= 0) continue;
+                            red += 1 / (float)color.R;
+                            green += 1 / (float)color.G;
+                            blue += 1 / (float)color.B;
                         }
                     }
+                    
+                    int redHarmonic = (int)(filterSizeWidth * filterSizeHeight / red);
+                    int greenHarmonic = (int)(filterSizeWidth * filterSizeHeight / green);
+                    int blueHarmonic = (int)(filterSizeWidth * filterSizeHeight / blue);
 
-                    Color newPixel = ((filterSizeHeight * filterSizeHeight)/(red), (filterSizeHeight * filterSizeHeight)/ green, (filterSizeHeight * filterSizeHeight) / blue)
-                    picture.SetPixel(x, y, PixelFormat);
+                    redHarmonic = Math.Clamp(redHarmonic, 0, 255);
+                    greenHarmonic = Math.Clamp(greenHarmonic, 0, 255);
+                    blueHarmonic = Math.Clamp(blueHarmonic, 0, 255);
+
+                    picture.SetPixel(x, y,Color.FromArgb( picture.GetPixel(x, y).A, redHarmonic, greenHarmonic, blueHarmonic));
                 }
             }
-        }*/
+            return picture;
+        }
 
         // -- ERROR ANALYSIS --
         public float meanSquareError(Bitmap picture1, Bitmap picture2)
