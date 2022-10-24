@@ -391,6 +391,70 @@ namespace ImageProcessing
             return result;
         }
 
+        public double SignalToNoiseRatio(Bitmap picture1, Bitmap picture2)
+        {
+            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            {
+                return -1;
+            }
+
+            float sum = 0;
+            float dif = 0;
+
+            for (int x = 0; x < picture1.Width; x++)
+            {
+                for (int y = 0; y < picture1.Height; y++)
+                {
+                    Color pixel1 = picture1.GetPixel(x, y);
+                    Color pixel2 = picture2.GetPixel(x, y);
+
+                    float redDif = pixel1.R - pixel2.R;
+                    float greenDif = pixel1.G - pixel2.G;
+                    float blueDif = pixel1.B - pixel2.B;
+
+                    sum += (pixel1.R * pixel1.R + pixel1.G * pixel1.G + pixel1.B * pixel1.B) / 3;
+                    dif += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
+                }
+            }
+            return 10 * Math.Log10(sum / dif);
+        }
+
+        public double PeakSignalToNoiseRatio(Bitmap picture1, Bitmap picture2)
+        {
+            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            {
+                return -1;
+            }
+            float maxR = 0;
+            float maxG = 0;
+            float maxB = 0;
+
+            float dif = 0;
+
+            for (int x = 0; x < picture1.Width; x++)
+            {
+                for (int y = 0; y < picture1.Height; y++)
+                {
+                    Color pixel1 = picture1.GetPixel(x, y);
+                    Color pixel2 = picture2.GetPixel(x, y);
+
+                    if (pixel1.R > maxR)
+                        maxR = pixel1.R;
+                    if (pixel1.G > maxG)
+                        maxG = pixel1.G;
+                    if (pixel1.B > maxB)
+                        maxB = pixel1.B;
+
+                    float redDif = pixel1.R - pixel2.R;
+                    float greenDif = pixel1.G - pixel2.G;
+                    float blueDif = pixel1.B - pixel2.B;
+
+                    dif += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
+                }
+            }
+            return 10 * Math.Log10(((maxR + maxG + maxB) / 3 * ((maxR + maxG + maxB) / 3)) / dif);
+        }
+
         public float maximumDifference(Bitmap picture1, Bitmap picture2)
         {
 
@@ -398,6 +462,7 @@ namespace ImageProcessing
             {
                 return -1;
             }
+
 
             float maximumDifference = -1;
 

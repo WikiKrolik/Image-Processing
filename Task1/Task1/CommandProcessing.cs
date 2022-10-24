@@ -233,12 +233,18 @@ US: 1.4 (dot)";
 
                     break;
                 case "--snr":
-                    Console.WriteLine("Not implemented");
-                    
+                    inputPicture1 = p.LoadPicture(arguments[2]);
+                    inputPicture2 = p.LoadPicture(arguments[3]);
+
+                    Console.WriteLine($"Signal to noise ratio error: {p.SignalToNoiseRatio(inputPicture1, inputPicture2)}");
+
                     break;
                 case "--psnr":
-                    Console.WriteLine("Not implemented");
-                    
+                    inputPicture1 = p.LoadPicture(arguments[2]);
+                    inputPicture2 = p.LoadPicture(arguments[3]);
+
+                    Console.WriteLine($"Peak signal to noise ratio error: {p.PeakSignalToNoiseRatio(inputPicture1, inputPicture2)}");
+
                     break;
                 case "--md":
                     inputPicture1 = p.LoadPicture(arguments[2]);
