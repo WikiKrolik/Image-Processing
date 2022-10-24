@@ -293,24 +293,27 @@ namespace ImageProcessing
                     float red = 0f;
                     float green = 0f;
                     float blue = 0f;
-
+                    int pixel = 0;
                     for (int i = x - filterSizeWidth / 2; i < x + filterSizeWidth - filterSizeWidth / 2; i++)
                     {
                         if (i < 0 || i >= picture.Width) continue;
+ 
                         for (int j = y - filterSizeHeight / 2; j < y + filterSizeHeight - filterSizeHeight / 2; j++)
                         {
                             if (j < 0 || j >= picture.Height) continue;
+
                             Color color = picture.GetPixel(i, j);
                             if (color.R <= 0 || color.G <= 0 || color.B <= 0) continue;
                             red += 1 / (float)color.R;
                             green += 1 / (float)color.G;
                             blue += 1 / (float)color.B;
+                            pixel++;
                         }
                     }
                     
-                    int redHarmonic = (int)(filterSizeWidth * filterSizeHeight / red);
-                    int greenHarmonic = (int)(filterSizeWidth * filterSizeHeight / green);
-                    int blueHarmonic = (int)(filterSizeWidth * filterSizeHeight / blue);
+                    int redHarmonic = (int)(pixel/ red);
+                    int greenHarmonic = (int)(pixel/ green);
+                    int blueHarmonic = (int)(pixel/ blue);
 
                     redHarmonic = Math.Clamp(redHarmonic, 0, 255);
                     greenHarmonic = Math.Clamp(greenHarmonic, 0, 255);

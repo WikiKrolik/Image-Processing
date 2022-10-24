@@ -80,6 +80,7 @@ US: 1.4 (dot)";
                 return;
             }
             int intModifier = 0;
+            int intModifier2 = 0;
             float floatModifier = 0;
 
             Bitmap inputPicture1;
@@ -206,7 +207,15 @@ US: 1.4 (dot)";
 
                     break;
                 case "--hmean":
-                    Console.WriteLine("Not implemented");
+                    if (arguments.Length != 5 || !Int32.TryParse(arguments[3], out intModifier) || !Int32.TryParse(arguments[4], out intModifier2) || intModifier < 0 || intModifier2 < 0)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputPicture1 = p.LoadPicture(arguments[2]);
+                    outputPicture = p.HarmonicFilter(p.LoadPicture(arguments[2]), intModifier, intModifier2);
+
+                    saveOutput(inputPicture1, outputPicture, "harmonic");
 
                     break;
                 case "--mse":
