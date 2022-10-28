@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -79,6 +80,7 @@ US: 1.4 (dot)";
                 Console.WriteLine(invalidMessage);
                 return;
             }
+
             int intModifier = 0;
             int intModifier2 = 0;
             float floatModifier = 0;
@@ -86,6 +88,9 @@ US: 1.4 (dot)";
             Bitmap inputPicture1;
             Bitmap inputPicture2;
             Bitmap outputPicture;
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             switch (arguments[1])
             {
@@ -219,6 +224,12 @@ US: 1.4 (dot)";
 
                     break;
                 case "--mse":
+                    if (arguments.Length != 4)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
                     inputPicture1 = p.LoadPicture(arguments[2]);
                     inputPicture2 = p.LoadPicture(arguments[3]);
 
@@ -226,6 +237,12 @@ US: 1.4 (dot)";
 
                     break;
                 case "--pmse":
+                    if (arguments.Length != 4)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
                     inputPicture1 = p.LoadPicture(arguments[2]);
                     inputPicture2 = p.LoadPicture(arguments[3]);
 
@@ -233,6 +250,12 @@ US: 1.4 (dot)";
 
                     break;
                 case "--snr":
+                    if (arguments.Length != 4)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
                     inputPicture1 = p.LoadPicture(arguments[2]);
                     inputPicture2 = p.LoadPicture(arguments[3]);
 
@@ -240,6 +263,12 @@ US: 1.4 (dot)";
 
                     break;
                 case "--psnr":
+                    if (arguments.Length != 4)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
                     inputPicture1 = p.LoadPicture(arguments[2]);
                     inputPicture2 = p.LoadPicture(arguments[3]);
 
@@ -247,6 +276,12 @@ US: 1.4 (dot)";
 
                     break;
                 case "--md":
+                    if (arguments.Length != 4)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
                     inputPicture1 = p.LoadPicture(arguments[2]);
                     inputPicture2 = p.LoadPicture(arguments[3]);
 
@@ -255,12 +290,14 @@ US: 1.4 (dot)";
                     break;
                 case "--help":
                     Console.WriteLine(helpMessage);
-
-                    break;
+                    return; // return to prevent showing elapsed time
                 default:
                     Console.WriteLine(invalidMessage);
                     break;
             }
+
+            stopwatch.Stop();
+            Console.WriteLine("Elapsed time: {0} ms", stopwatch.ElapsedMilliseconds);
         }
     }
 }
