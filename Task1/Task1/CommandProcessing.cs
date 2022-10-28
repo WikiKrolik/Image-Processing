@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,12 +65,23 @@ US: 1.4 (dot)
 ";
         static ImageProcessing p = new ImageProcessing();
 
-        private static void saveOutput(Bitmap original, Bitmap output, String operation)
+        public static Bitmap LoadImage(string name)
+        {
+            Bitmap picture = (Bitmap)Bitmap.FromFile(name);
+            return picture;
+        }
+
+        public static void SaveImage(Bitmap picture, String path)
+        {
+            picture.Save(path, ImageFormat.Bmp);
+        }
+
+        private static void SaveOutput(Bitmap original, Bitmap output, String operation)
         {
             String path = $".\\{ DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}_{ operation}";
             Directory.CreateDirectory(path);
-            p.SavePicture(original, $"{path}\\original.bmp");
-            p.SavePicture(output, $"{path}\\output.bmp");
+            SaveImage(original, $"{path}\\original.bmp");
+            SaveImage(output, $"{path}\\output.bmp");
         }
 
         public static void start()
@@ -86,8 +98,8 @@ US: 1.4 (dot)
             int intModifier2 = 0;
             float floatModifier = 0;
 
-            Bitmap inputPicture1;
-            Bitmap inputPicture2;
+            Bitmap inputImage1;
+            Bitmap inputImage2;
             Bitmap outputPicture;
 
             Stopwatch stopwatch = new Stopwatch();
@@ -109,10 +121,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.ModifyBrightness(p.LoadPicture(arguments[2]), intModifier);
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.ModifyBrightness(LoadImage(arguments[2]), intModifier);
 
-                    saveOutput(inputPicture1, outputPicture, "brightness");
+                    SaveOutput(inputImage1, outputPicture, "brightness");
 
                     break;
                 case "--contrast":
@@ -122,10 +134,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.ModifyContrast(p.LoadPicture(arguments[2]), floatModifier);
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.ModifyContrast(LoadImage(arguments[2]), floatModifier);
 
-                    saveOutput(inputPicture1, outputPicture, "contrast");
+                    SaveOutput(inputImage1, outputPicture, "contrast");
 
                     break;
                 case "--negative":
@@ -135,10 +147,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.Negative(p.LoadPicture(arguments[2]));
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Negative(LoadImage(arguments[2]));
 
-                    saveOutput(inputPicture1, outputPicture, "negative");
+                    SaveOutput(inputImage1, outputPicture, "negative");
 
                     break;
                 case "--hflip":
@@ -148,10 +160,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.HorizontalFlip(p.LoadPicture(arguments[2]));
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.HorizontalFlip(LoadImage(arguments[2]));
 
-                    saveOutput(inputPicture1, outputPicture, "hflip");
+                    SaveOutput(inputImage1, outputPicture, "hflip");
 
                     break;
                 case "--vflip":
@@ -161,10 +173,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.VerticalFlip(p.LoadPicture(arguments[2]));
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.VerticalFlip(LoadImage(arguments[2]));
 
-                    saveOutput(inputPicture1, outputPicture, "vflip");
+                    SaveOutput(inputImage1, outputPicture, "vflip");
 
                     break;
                 case "--dflip":
@@ -174,10 +186,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.DiagonalFlip(p.LoadPicture(arguments[2]));
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.DiagonalFlip(LoadImage(arguments[2]));
 
-                    saveOutput(inputPicture1, outputPicture, "dflip");
+                    SaveOutput(inputImage1, outputPicture, "dflip");
 
                     break;
                 case "--shrink":
@@ -187,10 +199,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.Resize(p.LoadPicture(arguments[2]), 1 / floatModifier);
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Resize(LoadImage(arguments[2]), 1 / floatModifier);
 
-                    saveOutput(inputPicture1, outputPicture, "shrink");
+                    SaveOutput(inputImage1, outputPicture, "shrink");
 
                     break;
                 case "--enlarge":
@@ -200,10 +212,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.Resize(p.LoadPicture(arguments[2]), floatModifier);
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Resize(LoadImage(arguments[2]), floatModifier);
 
-                    saveOutput(inputPicture1, outputPicture, "enlarge");
+                    SaveOutput(inputImage1, outputPicture, "enlarge");
 
                     break;
                 case "--median":
@@ -213,10 +225,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.MedianFilter(p.LoadPicture(arguments[2]), intModifier);
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.MedianFilter(LoadImage(arguments[2]), intModifier);
 
-                    saveOutput(inputPicture1, outputPicture, "median");
+                    SaveOutput(inputImage1, outputPicture, "median");
 
                     break;
                 case "--hmean":
@@ -225,10 +237,10 @@ US: 1.4 (dot)
                         Console.WriteLine(invalidMessage);
                         return;
                     }
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    outputPicture = p.HarmonicFilter(p.LoadPicture(arguments[2]), intModifier, intModifier2);
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.HarmonicFilter(LoadImage(arguments[2]), intModifier, intModifier2);
 
-                    saveOutput(inputPicture1, outputPicture, "harmonic");
+                    SaveOutput(inputImage1, outputPicture, "harmonic");
 
                     break;
                 case "--mse":
@@ -238,10 +250,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    inputPicture2 = p.LoadPicture(arguments[3]);
+                    inputImage1 = LoadImage(arguments[2]);
+                    inputImage2 = LoadImage(arguments[3]);
 
-                    Console.WriteLine($"Mean square error: {p.meanSquareError(inputPicture1, inputPicture2)}");
+                    Console.WriteLine($"Mean square error: {p.MeanSquareError(inputImage1, inputImage2)}");
 
                     break;
                 case "--pmse":
@@ -251,10 +263,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    inputPicture2 = p.LoadPicture(arguments[3]);
+                    inputImage1 = LoadImage(arguments[2]);
+                    inputImage2 = LoadImage(arguments[3]);
 
-                    Console.WriteLine($"Peak mean square error: {p.PeakMeanSquareError(inputPicture1, inputPicture2)}");
+                    Console.WriteLine($"Peak mean square error: {p.PeakMeanSquareError(inputImage1, inputImage2)}");
 
                     break;
                 case "--snr":
@@ -264,10 +276,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    inputPicture2 = p.LoadPicture(arguments[3]);
+                    inputImage1 = LoadImage(arguments[2]);
+                    inputImage2 = LoadImage(arguments[3]);
 
-                    Console.WriteLine($"Signal to noise ratio error: {p.SignalToNoiseRatio(inputPicture1, inputPicture2)}");
+                    Console.WriteLine($"Signal to noise ratio error: {p.SignalToNoiseRatio(inputImage1, inputImage2)}");
 
                     break;
                 case "--psnr":
@@ -277,10 +289,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    inputPicture2 = p.LoadPicture(arguments[3]);
+                    inputImage1 = LoadImage(arguments[2]);
+                    inputImage2 = LoadImage(arguments[3]);
 
-                    Console.WriteLine($"Peak signal to noise ratio error: {p.PeakSignalToNoiseRatio(inputPicture1, inputPicture2)}");
+                    Console.WriteLine($"Peak signal to noise ratio error: {p.PeakSignalToNoiseRatio(inputImage1, inputImage2)}");
 
                     break;
                 case "--md":
@@ -290,10 +302,10 @@ US: 1.4 (dot)
                         return;
                     }
 
-                    inputPicture1 = p.LoadPicture(arguments[2]);
-                    inputPicture2 = p.LoadPicture(arguments[3]);
+                    inputImage1 = LoadImage(arguments[2]);
+                    inputImage2 = LoadImage(arguments[3]);
 
-                    Console.WriteLine($"Maximum difference: {p.maximumDifference(inputPicture1, inputPicture2)}");
+                    Console.WriteLine($"Maximum difference: {p.MaximumDifference(inputImage1, inputImage2)}");
 
                     break;
                 case "--help":

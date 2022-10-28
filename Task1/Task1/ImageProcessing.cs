@@ -20,40 +20,29 @@ namespace ImageProcessing
             return Lerp(Lerp(x00, x10, tx), Lerp(x01, x11, tx), ty);
         }
 
-        public Bitmap LoadPicture(string name)
+        public Bitmap AddPaddding(Bitmap image, int border)
         {
-            Bitmap picture = (Bitmap)Bitmap.FromFile(name);
-            return picture;
-        }
-
-        public void SavePicture(Bitmap picture, String path)
-        {
-            picture.Save(path, ImageFormat.Png);
-        }
-
-        public Bitmap AddPaddding(Bitmap picture, int border)
-        {
-            int newWidth = picture.Width + 2 * border;
-            int newHeight = picture.Height + 2 * border;
-            Bitmap newPicture = new Bitmap(newWidth, newHeight);
+            int newWidth = image.Width + 2 * border;
+            int newHeight = image.Height + 2 * border;
+            Bitmap newImage = new Bitmap(newWidth, newHeight);
 
             for (int x = 0; x < newWidth; x++)
             {
                 for (int y = 0; y < newHeight; y++)
                 {
-                    newPicture.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                    newImage.SetPixel(x, y, Color.FromArgb(0, 0, 0));
                 }
             }
 
-            for (int x = 0; x < picture.Width; x++)
+            for (int x = 0; x < image.Width; x++)
             {
-                for (int y = 0; y < picture.Height; y++)
+                for (int y = 0; y < image.Height; y++)
                 {
-                    newPicture.SetPixel(x + border, y + border, picture.GetPixel(x, y));
+                    newImage.SetPixel(x + border, y + border, image.GetPixel(x, y));
                 }
             }
 
-            return newPicture;
+            return newImage;
         }
 
         public Color Median(Color[] arr)
@@ -88,13 +77,13 @@ namespace ImageProcessing
         }
 
         // -- BASIC OPERATIONS --
-        public Bitmap ModifyBrightness(Bitmap picture, int brightness)
+        public Bitmap ModifyBrightness(Bitmap image, int brightness)
         {
-            for (int x = 0; x < picture.Width; x++)
+            for (int x = 0; x < image.Width; x++)
             {
-                for (int y = 0; y < picture.Height; y++)
+                for (int y = 0; y < image.Height; y++)
                 {
-                    Color pixelColor = picture.GetPixel(x, y);
+                    Color pixelColor = image.GetPixel(x, y);
 
                     int r = brightness + pixelColor.R;
                     int g = brightness + pixelColor.G;
@@ -104,23 +93,23 @@ namespace ImageProcessing
                     g = Math.Clamp(g, 0, 255);
                     b = Math.Clamp(b, 0, 255);
 
-                    picture.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
+                    image.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
 
             }
 
-            return picture;
+            return image;
         }
 
         // 0 < contrast < 1 for less contrast
         // contrast > 1 for more contrast
-        public Bitmap ModifyContrast(Bitmap picture, float contrast) 
+        public Bitmap ModifyContrast(Bitmap image, float contrast) 
         {
-            for (int x = 0; x < picture.Width; x++)
+            for (int x = 0; x < image.Width; x++)
             {
-                for (int y = 0; y < picture.Height; y++)
+                for (int y = 0; y < image.Height; y++)
                 {
-                    Color pixelColor = picture.GetPixel(x, y);
+                    Color pixelColor = image.GetPixel(x, y);
 
                     int r = (int)(contrast * (pixelColor.R - 128) + 128);
                     int g = (int)(contrast * (pixelColor.G - 128) + 128);
@@ -130,95 +119,95 @@ namespace ImageProcessing
                     g = Math.Clamp(g, 0, 255);
                     b = Math.Clamp(b, 0, 255);
 
-                    picture.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
+                    image.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
             }
             
-            return picture;
+            return image;
         }
 
-        public Bitmap Negative(Bitmap picture)
+        public Bitmap Negative(Bitmap image)
         {
-            for (int x = 0; x < picture.Width; x++)
+            for (int x = 0; x < image.Width; x++)
             {
-                for (int y = 0; y < picture.Height; y++)
+                for (int y = 0; y < image.Height; y++)
                 {
-                    Color pixelColor = picture.GetPixel(x, y);
+                    Color pixelColor = image.GetPixel(x, y);
 
                     int r = 255 - pixelColor.R;
                     int g = 255 - pixelColor.G;
                     int b = 255 - pixelColor.B;
 
-                    picture.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
+                    image.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
             }
 
-            return picture;
+            return image;
         }
 
         // -- GEOMETRIC OPERATIONS --
-        public Bitmap HorizontalFlip(Bitmap picture)
+        public Bitmap HorizontalFlip(Bitmap image)
         {
-            for (int x = 0; x < picture.Width / 2; x++)
+            for (int x = 0; x < image.Width / 2; x++)
             {
-                for (int y = 0; y < picture.Height; y++)
+                for (int y = 0; y < image.Height; y++)
                 {
-                    Color pixelColor = picture.GetPixel(x, y);
-                    Color pixel = picture.GetPixel(picture.Width - x - 1, y);
-                    picture.SetPixel(x, y, pixel);
-                    picture.SetPixel(picture.Width - x - 1, y, pixelColor);
+                    Color pixelColor = image.GetPixel(x, y);
+                    Color pixel = image.GetPixel(image.Width - x - 1, y);
+                    image.SetPixel(x, y, pixel);
+                    image.SetPixel(image.Width - x - 1, y, pixelColor);
                 }
             }
 
-            return picture;
+            return image;
         }
 
-        public Bitmap VerticalFlip(Bitmap picture)
+        public Bitmap VerticalFlip(Bitmap image)
         {
-            for (int x = 0; x < picture.Width; x++)
+            for (int x = 0; x < image.Width; x++)
             {
-                for (int y = 0; y < picture.Height / 2; y++)
+                for (int y = 0; y < image.Height / 2; y++)
                 {
-                    Color pixelColor = picture.GetPixel(x, y);
-                    Color pixel = picture.GetPixel(x, picture.Height - y - 1);
-                    picture.SetPixel(x, y, pixel);
-                    picture.SetPixel(x, picture.Height - y - 1, pixelColor);
+                    Color pixelColor = image.GetPixel(x, y);
+                    Color pixel = image.GetPixel(x, image.Height - y - 1);
+                    image.SetPixel(x, y, pixel);
+                    image.SetPixel(x, image.Height - y - 1, pixelColor);
                 }
             }
 
-            return picture;
+            return image;
         }
 
-        public Bitmap DiagonalFlip(Bitmap picture)
+        public Bitmap DiagonalFlip(Bitmap image)
         {
-            for (int x = 0; x < picture.Width; x++)
+            for (int x = 0; x < image.Width; x++)
             {
-                for (int y = 0; y < picture.Height / 2; y++)
+                for (int y = 0; y < image.Height / 2; y++)
                 {
-                    Color pixelColor = picture.GetPixel(x, y);
-                    Color pixel = picture.GetPixel(picture.Width - x - 1, picture.Height - y - 1);
-                    picture.SetPixel(x, y, pixel);
-                    picture.SetPixel(picture.Width - x - 1, picture.Height - y - 1, pixelColor);
+                    Color pixelColor = image.GetPixel(x, y);
+                    Color pixel = image.GetPixel(image.Width - x - 1, image.Height - y - 1);
+                    image.SetPixel(x, y, pixel);
+                    image.SetPixel(image.Width - x - 1, image.Height - y - 1, pixelColor);
                 }
             }
 
-            return picture;
+            return image;
         }
 
-        public Bitmap Resize(Bitmap picture, float scale)
+        public Bitmap Resize(Bitmap image, float scale)
         {
             if (scale == 1)
             {
-                return picture;
+                return image;
             }
 
-            int startingWidth = picture.Width;
-            int startingHeight = picture.Height;
+            int startingWidth = image.Width;
+            int startingHeight = image.Height;
 
-            int newWidth = (int)(picture.Width * scale);
-            int newHeight = (int)(picture.Height * scale);
+            int newWidth = (int)(image.Width * scale);
+            int newHeight = (int)(image.Height * scale);
 
-            Bitmap resizedPicture = new Bitmap(newWidth, newHeight,
+            Bitmap resizedimage = new Bitmap(newWidth, newHeight,
                           PixelFormat.Format24bppRgb);
 
             for (int x = 0; x < newWidth; x++)
@@ -226,25 +215,25 @@ namespace ImageProcessing
                 for (int y = 0; y < newHeight; y++)
                 {
                     // Map scaled coordinates to original
-                    float originalX = ((float)x) / newWidth * (picture.Width - 1);
-                    float originalY = ((float)y) / newHeight * (picture.Height - 1);
+                    float originalX = ((float)x) / newWidth * (image.Width - 1);
+                    float originalY = ((float)y) / newHeight * (image.Height - 1);
                     int originalIntX = (int)originalX;
                     int originalIntY = (int)originalY;
 
-                    Color x00 = picture.GetPixel(originalIntX, originalIntY);
-                    Color x10 = picture.GetPixel(originalIntX + 1, originalIntY);
-                    Color x01 = picture.GetPixel(originalIntX, originalIntY + 1);
-                    Color x11 = picture.GetPixel(originalIntX + 1, originalIntY + 1);
+                    Color x00 = image.GetPixel(originalIntX, originalIntY);
+                    Color x10 = image.GetPixel(originalIntX + 1, originalIntY);
+                    Color x01 = image.GetPixel(originalIntX, originalIntY + 1);
+                    Color x11 = image.GetPixel(originalIntX + 1, originalIntY + 1);
 
                     int r = (int)Blerp(x00.R, x10.R, x01.R, x11.R, originalX - originalIntX, originalY - originalIntY);
                     int g = (int)Blerp(x00.G, x10.G, x01.G, x11.G, originalX - originalIntX, originalY - originalIntY);
                     int b = (int)Blerp(x00.B, x10.B, x01.B, x11.B, originalX - originalIntX, originalY - originalIntY);
                     Color calculatedColor = Color.FromArgb(r, g, b);
-                    resizedPicture.SetPixel(x, y, calculatedColor);
+                    resizedimage.SetPixel(x, y, calculatedColor);
                 }
             }
 
-            return resizedPicture;
+            return resizedimage;
         }
 
         // -- NOISE REMOVAL --
@@ -281,10 +270,12 @@ namespace ImageProcessing
             return filteredImage;
         }
 
-          public Bitmap HarmonicFilter(Bitmap picture, int filterSizeWidth, int filterSizeHeight )
+          public Bitmap HarmonicFilter(Bitmap image, int filterSizeWidth, int filterSizeHeight )
           {
-            int w = picture.Width;
-            int h = picture.Height;
+            int w = image.Width;
+            int h = image.Height;
+
+            Bitmap filteredImage = AddPaddding(image, 0);
 
             for (int x = 0; x < w; x++)
             {
@@ -293,16 +284,18 @@ namespace ImageProcessing
                     float red = 0f;
                     float green = 0f;
                     float blue = 0f;
+            
                     int pixel = 0;
+                    
                     for (int i = x - filterSizeWidth / 2; i < x + filterSizeWidth - filterSizeWidth / 2; i++)
                     {
-                        if (i < 0 || i >= picture.Width) continue;
+                        if (i < 0 || i >= filteredImage.Width) continue;
  
                         for (int j = y - filterSizeHeight / 2; j < y + filterSizeHeight - filterSizeHeight / 2; j++)
                         {
-                            if (j < 0 || j >= picture.Height) continue;
+                            if (j < 0 || j >= filteredImage.Height) continue;
 
-                            Color color = picture.GetPixel(i, j);
+                            Color color = filteredImage.GetPixel(i, j);
                             if (color.R <= 0 || color.G <= 0 || color.B <= 0) continue;
                             red += 1 / (float)color.R;
                             green += 1 / (float)color.G;
@@ -319,28 +312,29 @@ namespace ImageProcessing
                     greenHarmonic = Math.Clamp(greenHarmonic, 0, 255);
                     blueHarmonic = Math.Clamp(blueHarmonic, 0, 255);
 
-                    picture.SetPixel(x, y,Color.FromArgb( picture.GetPixel(x, y).A, redHarmonic, greenHarmonic, blueHarmonic));
+                    filteredImage.SetPixel(x, y,Color.FromArgb(filteredImage.GetPixel(x, y).A, redHarmonic, greenHarmonic, blueHarmonic));
                 }
             }
-            return picture;
+
+            return filteredImage;
         }
 
         // -- ERROR ANALYSIS --
-        public float meanSquareError(Bitmap picture1, Bitmap picture2)
+        public float MeanSquareError(Bitmap image1, Bitmap image2)
         {
-            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            if (image1.Width != image2.Width || image1.Height != image2.Height)
             {
                 return -1;
             }
 
             float meanSquareErorr = 0;
 
-            for (int x = 0; x < picture1.Width; x++)
+            for (int x = 0; x < image1.Width; x++)
             {
-                for (int y = 0; y < picture1.Height; y++)
+                for (int y = 0; y < image1.Height; y++)
                 {
-                    Color pixel1 = picture1.GetPixel(x, y);
-                    Color pixel2 = picture2.GetPixel(x, y);
+                    Color pixel1 = image1.GetPixel(x, y);
+                    Color pixel2 = image2.GetPixel(x, y);
 
                     float redDif = pixel1.R - pixel2.R;
                     float greenDif = pixel1.G - pixel2.G;
@@ -350,12 +344,12 @@ namespace ImageProcessing
                 }
             }
 
-            return meanSquareErorr / picture1.Width / picture1.Height;
+            return meanSquareErorr / image1.Width / image1.Height;
         }
 
-        public float PeakMeanSquareError(Bitmap picture1, Bitmap picture2)
+        public float PeakMeanSquareError(Bitmap image1, Bitmap image2)
         {
-            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            if (image1.Width != image2.Width || image1.Height != image2.Height)
             {
                 return -1;
             }
@@ -363,14 +357,15 @@ namespace ImageProcessing
             float maxR = 0;
             float maxG = 0;
             float maxB = 0;
+            
             float peakMeanSquareErorr = 0;
 
-            for (int i = 0; i < picture1.Width; i++)
+            for (int i = 0; i < image1.Width; i++)
             {
-                for (int j = 0; j < picture1.Height; j++)
+                for (int j = 0; j < image1.Height; j++)
                 {
-                    Color pixel1 = picture1.GetPixel(j, i);
-                    Color pixel2 = picture2.GetPixel(j, i);
+                    Color pixel1 = image1.GetPixel(j, i);
+                    Color pixel2 = image2.GetPixel(j, i);
 
                     if (pixel1.R > maxR)
                         maxR = pixel1.R;
@@ -386,14 +381,15 @@ namespace ImageProcessing
                     peakMeanSquareErorr += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
                 }
             }
-            float result = peakMeanSquareErorr / (picture1.Width / picture1.Height * ((maxR + maxG + maxB) / 3) * ((maxR + maxG + maxB) / 3));
+            
+            float result = peakMeanSquareErorr / (image1.Width / image1.Height * ((maxR + maxG + maxB) / 3) * ((maxR + maxG + maxB) / 3));
 
             return result;
         }
 
-        public double SignalToNoiseRatio(Bitmap picture1, Bitmap picture2)
+        public double SignalToNoiseRatio(Bitmap image1, Bitmap image2)
         {
-            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            if (image1.Width != image2.Width || image1.Height != image2.Height)
             {
                 return -1;
             }
@@ -401,12 +397,12 @@ namespace ImageProcessing
             float sum = 0;
             float dif = 0;
 
-            for (int x = 0; x < picture1.Width; x++)
+            for (int x = 0; x < image1.Width; x++)
             {
-                for (int y = 0; y < picture1.Height; y++)
+                for (int y = 0; y < image1.Height; y++)
                 {
-                    Color pixel1 = picture1.GetPixel(x, y);
-                    Color pixel2 = picture2.GetPixel(x, y);
+                    Color pixel1 = image1.GetPixel(x, y);
+                    Color pixel2 = image2.GetPixel(x, y);
 
                     float redDif = pixel1.R - pixel2.R;
                     float greenDif = pixel1.G - pixel2.G;
@@ -416,27 +412,29 @@ namespace ImageProcessing
                     dif += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
                 }
             }
+            
             return 10 * Math.Log10(sum / dif);
         }
 
-        public double PeakSignalToNoiseRatio(Bitmap picture1, Bitmap picture2)
+        public double PeakSignalToNoiseRatio(Bitmap image1, Bitmap image2)
         {
-            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            if (image1.Width != image2.Width || image1.Height != image2.Height)
             {
                 return -1;
             }
+            
             float maxR = 0;
             float maxG = 0;
             float maxB = 0;
 
             float dif = 0;
 
-            for (int x = 0; x < picture1.Width; x++)
+            for (int x = 0; x < image1.Width; x++)
             {
-                for (int y = 0; y < picture1.Height; y++)
+                for (int y = 0; y < image1.Height; y++)
                 {
-                    Color pixel1 = picture1.GetPixel(x, y);
-                    Color pixel2 = picture2.GetPixel(x, y);
+                    Color pixel1 = image1.GetPixel(x, y);
+                    Color pixel2 = image2.GetPixel(x, y);
 
                     if (pixel1.R > maxR)
                         maxR = pixel1.R;
@@ -452,13 +450,14 @@ namespace ImageProcessing
                     dif += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
                 }
             }
+
             return 10 * Math.Log10(((maxR + maxG + maxB) / 3 * ((maxR + maxG + maxB) / 3)) / dif);
         }
 
-        public float maximumDifference(Bitmap picture1, Bitmap picture2)
+        public float MaximumDifference(Bitmap image1, Bitmap image2)
         {
 
-            if (picture1.Width != picture2.Width || picture1.Height != picture2.Height)
+            if (image1.Width != image2.Width || image1.Height != image2.Height)
             {
                 return -1;
             }
@@ -466,12 +465,12 @@ namespace ImageProcessing
 
             float maximumDifference = -1;
 
-            for (int x = 0; x < picture1.Width; x++)
+            for (int x = 0; x < image1.Width; x++)
             {
-                for (int y = 0; y < picture1.Height; y++)
+                for (int y = 0; y < image1.Height; y++)
                 {
-                    Color pixel1 = picture1.GetPixel(x, y);
-                    Color pixel2 = picture2.GetPixel(x, y);
+                    Color pixel1 = image1.GetPixel(x, y);
+                    Color pixel2 = image2.GetPixel(x, y);
 
                     float redDif = Math.Abs(pixel1.R - pixel2.R);
                     float greenDif = Math.Abs(pixel1.G - pixel2.G);
