@@ -107,8 +107,6 @@ namespace ImageProcessing
          
             float contrast = (float)Math.Pow((100.0 + threshold) / 100.0, 2);
 
-            Console.WriteLine(contrast);
-
             for (int x = 0; x < image.Width; x++)
             {
                 for (int y = 0; y < image.Height; y++)
