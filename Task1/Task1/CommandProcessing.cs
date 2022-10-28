@@ -17,7 +17,7 @@ namespace ImageProcessing
 --brightness <path:string> <modifier:int>
   Increase or decrease the brightness of an image.
 
---contrast <path:string> <modifier:float (0 < mod < 1 to decrease, mod > 1 to increase contrast)>
+--contrast <path:string> <modifier:int>
   Increase or decrease the contrast of an image.
 
 --negative <path:string>
@@ -128,14 +128,14 @@ US: 1.4 (dot)
 
                     break;
                 case "--contrast":
-                    if (arguments.Length != 4 || !float.TryParse(arguments[3], out floatModifier) || floatModifier < 0)
+                    if (arguments.Length != 4 || !int.TryParse(arguments[3], out intModifier))
                     {
                         Console.WriteLine(invalidMessage);
                         return;
                     }
 
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.ModifyContrast(LoadImage(arguments[2]), floatModifier);
+                    outputPicture = p.ModifyContrast(LoadImage(arguments[2]), intModifier);
 
                     SaveOutput(inputImage1, outputPicture, "contrast");
 

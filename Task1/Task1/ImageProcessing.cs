@@ -95,7 +95,6 @@ namespace ImageProcessing
 
                     image.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
-
             }
 
             return image;
@@ -103,17 +102,19 @@ namespace ImageProcessing
 
         // 0 < contrast < 1 for less contrast
         // contrast > 1 for more contrast
-        public Bitmap ModifyContrast(Bitmap image, float contrast) 
+        public Bitmap ModifyContrast(Bitmap image, int threshold) 
         {
+            int contrast = (int)Math.Pow((100.0 + threshold) / 100.0, 2);
+
             for (int x = 0; x < image.Width; x++)
             {
                 for (int y = 0; y < image.Height; y++)
                 {
                     Color pixelColor = image.GetPixel(x, y);
 
-                    int r = (int)(contrast * (pixelColor.R - 128) + 128);
-                    int g = (int)(contrast * (pixelColor.G - 128) + 128);
-                    int b = (int)(contrast * (pixelColor.B - 128) + 128);
+                    int r = (int)(((pixelColor.R / 255.0 - 0.5) * contrast + 0.5) * 255.0);
+                    int g = (int)(((pixelColor.G / 255.0 - 0.5) * contrast + 0.5) * 255.0);
+                    int b = (int)(((pixelColor.B / 255.0 - 0.5) * contrast + 0.5) * 255.0);
 
                     r = Math.Clamp(r, 0, 255);
                     g = Math.Clamp(g, 0, 255);
