@@ -104,7 +104,10 @@ namespace ImageProcessing
         // contrast > 1 for more contrast
         public Bitmap ModifyContrast(Bitmap image, int threshold) 
         {
-            int contrast = (int)Math.Pow((100.0 + threshold) / 100.0, 2);
+         
+            float contrast = (float)Math.Pow((100.0 + threshold) / 100.0, 2);
+
+            Console.WriteLine(contrast);
 
             for (int x = 0; x < image.Width; x++)
             {
