@@ -60,7 +60,8 @@ namespace ImageProcessing
 
 Remember that the float needs to be passed accordingly to your system localization, e.g.:
 POL: 1,4 (comma)
-US: 1.4 (dot)";
+US: 1.4 (dot)
+";
         static ImageProcessing p = new ImageProcessing();
 
         private static void saveOutput(Bitmap original, Bitmap output, String operation)
@@ -91,6 +92,13 @@ US: 1.4 (dot)";
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            // Clean the memory to calculate used memory more precisely
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            var memoryBefore = System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64;
 
             switch (arguments[1])
             {
@@ -290,14 +298,17 @@ US: 1.4 (dot)";
                     break;
                 case "--help":
                     Console.WriteLine(helpMessage);
-                    return; // return to prevent showing elapsed time
+                    break; // return to prevent showing elapsed time
                 default:
                     Console.WriteLine(invalidMessage);
                     break;
             }
 
             stopwatch.Stop();
+            var memoryAfter = System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64;
+
             Console.WriteLine("Elapsed time: {0} ms", stopwatch.ElapsedMilliseconds);
+            Console.WriteLine("Memory usage: {0} MB", Math.Round((decimal)(memoryAfter - memoryBefore) / 1024 / 1024, 2));
         }
     }
 }
