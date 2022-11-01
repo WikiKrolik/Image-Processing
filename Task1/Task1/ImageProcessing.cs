@@ -383,9 +383,9 @@ namespace ImageProcessing
                     peakMeanSquareErorr += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
                 }
             }
-            
-            float result = peakMeanSquareErorr / (image1.Width / image1.Height * ((maxR + maxG + maxB) / 3) * ((maxR + maxG + maxB) / 3));
 
+            float result = (peakMeanSquareErorr / image1.Width / image1.Height) / (((maxR + maxG + maxB) / 3) * ((maxR + maxG + maxB) / 3));
+            
             return result;
         }
 
@@ -424,36 +424,10 @@ namespace ImageProcessing
             {
                 return -1;
             }
-            
-            float maxR = 0;
-            float maxG = 0;
-            float maxB = 0;
 
-            float dif = 0;
+            float result = (float)(10 * Math.Log10(255 * 255 / SignalToNoiseRatio(image1, image2)));
 
-            for (int x = 0; x < image1.Width; x++)
-            {
-                for (int y = 0; y < image1.Height; y++)
-                {
-                    Color pixel1 = image1.GetPixel(x, y);
-                    Color pixel2 = image2.GetPixel(x, y);
-
-                    if (pixel1.R > maxR)
-                        maxR = pixel1.R;
-                    if (pixel1.G > maxG)
-                        maxG = pixel1.G;
-                    if (pixel1.B > maxB)
-                        maxB = pixel1.B;
-
-                    float redDif = pixel1.R - pixel2.R;
-                    float greenDif = pixel1.G - pixel2.G;
-                    float blueDif = pixel1.B - pixel2.B;
-
-                    dif += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
-                }
-            }
-
-            return 10 * Math.Log10(((maxR + maxG + maxB) / 3 * ((maxR + maxG + maxB) / 3)) / dif);
+            return result;
         }
 
         public float MaximumDifference(Bitmap image1, Bitmap image2)
