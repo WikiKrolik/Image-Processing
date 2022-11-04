@@ -277,8 +277,6 @@ namespace ImageProcessing
             int w = image.Width;
             int h = image.Height;
 
-            Bitmap filteredImage = AddPaddding(image, 0);
-
             for (int x = 0; x < w; x++)
             {
                 for (int y = 0; y < h; y++)
@@ -289,15 +287,15 @@ namespace ImageProcessing
             
                     int pixel = 0;
                     
-                    for (int i = x - radius; i < x + radius; i++)
+                    for (int i = x - radius; i <= x + radius; i++)
                     {
-                        if (i < 0 || i >= filteredImage.Width) continue;
+                        if (i < 0 || i >= image.Width) continue;
  
-                        for (int j = y - radius; j < y + radius; j++)
+                        for (int j = y - radius; j <= y + radius; j++)
                         {
-                            if (j < 0 || j >= filteredImage.Height) continue;
+                            if (j < 0 || j >= image.Height) continue;
 
-                            Color color = filteredImage.GetPixel(i, j);
+                            Color color = image.GetPixel(i, j);
                             if (color.R <= 0 || color.G <= 0 || color.B <= 0) continue;
                             red += 1 / (float)color.R;
                             green += 1 / (float)color.G;
@@ -314,11 +312,11 @@ namespace ImageProcessing
                     greenHarmonic = Math.Clamp(greenHarmonic, 0, 255);
                     blueHarmonic = Math.Clamp(blueHarmonic, 0, 255);
 
-                    filteredImage.SetPixel(x, y,Color.FromArgb(filteredImage.GetPixel(x, y).A, redHarmonic, greenHarmonic, blueHarmonic));
+                    image.SetPixel(x, y,Color.FromArgb(image.GetPixel(x, y).A, redHarmonic, greenHarmonic, blueHarmonic));
                 }
             }
 
-            return filteredImage;
+            return image;
         }
 
         // -- ERROR ANALYSIS --
