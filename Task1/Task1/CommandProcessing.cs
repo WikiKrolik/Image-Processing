@@ -232,13 +232,13 @@ US: 1.4 (dot)
 
                     break;
                 case "--hmean":
-                    if (arguments.Length != 5 || !Int32.TryParse(arguments[3], out intModifier) || !Int32.TryParse(arguments[4], out intModifier2) || intModifier < 0 || intModifier2 < 0)
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier) || intModifier < 0)
                     {
                         Console.WriteLine(invalidMessage);
                         return;
                     }
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.HarmonicFilter(LoadImage(arguments[2]), intModifier, intModifier2);
+                    outputPicture = p.HarmonicFilter(LoadImage(arguments[2]), intModifier);
 
                     SaveOutput(inputImage1, outputPicture, "harmonic");
 
