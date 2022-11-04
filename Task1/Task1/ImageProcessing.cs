@@ -272,7 +272,7 @@ namespace ImageProcessing
             return filteredImage;
         }
 
-          public Bitmap HarmonicFilter(Bitmap image, int filterSizeWidth, int filterSizeHeight )
+          public Bitmap HarmonicFilter(Bitmap image, int radius)
           {
             int w = image.Width;
             int h = image.Height;
@@ -289,11 +289,11 @@ namespace ImageProcessing
             
                     int pixel = 0;
                     
-                    for (int i = x - filterSizeWidth / 2; i < x + filterSizeWidth - filterSizeWidth / 2; i++)
+                    for (int i = x - radius; i < x + radius; i++)
                     {
                         if (i < 0 || i >= filteredImage.Width) continue;
  
-                        for (int j = y - filterSizeHeight / 2; j < y + filterSizeHeight - filterSizeHeight / 2; j++)
+                        for (int j = y - radius; j < y + radius; j++)
                         {
                             if (j < 0 || j >= filteredImage.Height) continue;
 
