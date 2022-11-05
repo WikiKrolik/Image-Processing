@@ -67,7 +67,7 @@ US: 1.4 (dot)
 
         public static Bitmap LoadImage(string name)
         {
-            Bitmap picture = (Bitmap)Bitmap.FromFile(name);
+            Bitmap picture = p.AddPaddding((Bitmap)Image.FromFile(name), 0);
             return picture;
         }
 
@@ -95,7 +95,6 @@ US: 1.4 (dot)
             }
 
             int intModifier = 0;
-            int intModifier2 = 0;
             float floatModifier = 0;
 
             Bitmap inputImage1;

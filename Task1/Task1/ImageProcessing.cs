@@ -244,8 +244,6 @@ namespace ImageProcessing
             int w = image.Width;
             int h = image.Height;
 
-            Bitmap filteredImage = AddPaddding(image, 0);
-
             for (int x = 0; x < w; x++)
             {
                 for (int y = 0; y < h; y++)
@@ -261,15 +259,15 @@ namespace ImageProcessing
                                 continue;
                             }
 
-                            filterMask.Add(filteredImage.GetPixel(x + fmx, y + fmy));
+                            filterMask.Add(image.GetPixel(x + fmx, y + fmy));
                         }
                     }
 
-                    filteredImage.SetPixel(x, y, Median(filterMask.ToArray()));
+                    image.SetPixel(x, y, Median(filterMask.ToArray()));
                 }
             }
 
-            return filteredImage;
+            return image;
         }
 
           public Bitmap HarmonicFilter(Bitmap image, int radius)
