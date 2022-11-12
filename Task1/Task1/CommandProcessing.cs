@@ -320,7 +320,23 @@ US: 1.4 (dot)
 
                     inputImage1 = LoadImage(arguments[2]);
 
-                    SaveOutput(inputImage1, p.Histogram(inputImage1, Int32.Parse(arguments[3])), "histogram");
+                    SaveOutput(inputImage1, p.HistogramToImage(inputImage1, Int32.Parse(arguments[3])), "histogram");
+
+                    break;
+                case "--hraleigh":
+                    if (arguments.Length != 5
+                        || !float.TryParse(arguments[3], out floatModifier)
+                        || !Int32.TryParse(arguments[4], out intModifier)
+                        )
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    //SaveOutput(inputImage1, p.Raleigh(inputImage1, floatModifier, intModifier), "hraleigh");
+                    SaveImage(p.Raleigh(inputImage1, floatModifier, intModifier), "test.bmp");
 
                     break;
                 case "--help":

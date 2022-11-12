@@ -76,11 +76,9 @@ namespace ImageProcessing
                 (blue[mid] + blue[mid - 1]) / 2);
         }
 
-        // Task 2
-        public Bitmap Histogram(Bitmap image, int channel)
+        public int[] Histogram(Bitmap image, int channel)
         {
             int[] histogramValues = new int[256];
-            int maxHistogramValue = -1;
 
             for (int i = 0; i < image.Width; i++)
             {
@@ -100,39 +98,110 @@ namespace ImageProcessing
                             value = image.GetPixel(i, j).B;
                             break;
                         default:
-                            continue; 
+                            continue;
                     }
 
                     histogramValues[value]++;
-                    
-                    if (maxHistogramValue < histogramValues[value])
-                    {
-                        maxHistogramValue = histogramValues[value];
-                    }
                 }
             }
 
-            
+            return histogramValues;
+        }
+
+        // Task 2
+        public Bitmap HistogramToImage(Bitmap image, int channel)
+        {
+            int[] histogramValues = Histogram(image, channel);
+
             Bitmap histogramBitmap = new Bitmap(256, 256);
 
             using (Graphics g = Graphics.FromImage(histogramBitmap))
             {
-                g.FillRectangle(Brushes.White, 0, 0, histogramBitmap.Width, histogramBitmap.Height);
+                g.FillRectangle(Brushes.White,
+                    0,
+                    0,
+                    histogramBitmap.Width,
+                    histogramBitmap.Height
+                    );
 
                 for (int i = 0; i < histogramValues.Length; i++)
                 {
-                    float pct = (float)histogramValues[i] / (float)maxHistogramValue * (float)256;
-
-                    Console.WriteLine(pct);
+                    float scaledValue = (float)histogramValues[i] / (float)histogramValues.Max() * (float)256;
 
                     g.DrawLine(Pens.Black,
                         new Point(i, 255),
-                        new Point(i, 255 - (int)pct)
+                        new Point(i, 255 - (int)scaledValue)
                         );
                 }
             }
 
             return histogramBitmap;
+        }
+
+        public Bitmap Raleigh(Bitmap image, float alpha, int minBrightness)
+        {
+            int[] histogramValuesR = Histogram(image, 0);
+            int[] histogramValuesG = Histogram(image, 1);
+            int[] histogramValuesB = Histogram(image, 2);
+
+            // g(f)
+            int CalculateBrightness(int f, int[] histogramValues)
+            {
+                int sum = 0;
+                int N = 0;
+
+                for (N = 0; N < f; N++)
+                {
+                    sum += histogramValues[N];
+                }
+
+                float underRoot = (float)(2 * alpha * alpha * Math.Log(1.0 / (1.0 / (float)256 * (float)sum)));
+
+                if (underRoot >= 0)
+                {
+                    return Math.Clamp(minBrightness + (int)Math.Pow(underRoot, 0.5), 0, 255);
+                }
+
+                return f;
+
+            }
+
+            int[] newBrightnessR = new int[256];
+            int[] newBrightnessG = new int[256];
+            int[] newBrightnessB = new int[256];
+
+            for (int i  = 0; i < 256; i++)
+            {
+                newBrightnessR[i] = CalculateBrightness(i, histogramValuesR);
+            }
+
+            for (int i = 0; i < 256; i++)
+            {
+                newBrightnessG[i] = CalculateBrightness(i, histogramValuesG);
+            }
+
+            for (int i = 0; i < 256; i++)
+            {
+                newBrightnessB[i] = CalculateBrightness(i, histogramValuesB);
+            }
+
+            for (int x = 0; x < image.Width; x++)
+            {
+                for (int y = 0; y < image.Height; y++)
+                {
+                    Color pixelColor = image.GetPixel(x, y);
+
+                    image.SetPixel(x, y, Color.FromArgb(
+                        pixelColor.A,
+                        newBrightnessR[pixelColor.R],
+                        newBrightnessG[pixelColor.G],
+                        newBrightnessB[pixelColor.B]
+                        )
+                    );
+                }
+            }
+
+            return image;
         }
 
         // Task 1
