@@ -307,6 +307,22 @@ US: 1.4 (dot)
                     Console.WriteLine($"Maximum difference: {p.MaximumDifference(inputImage1, inputImage2)}");
 
                     break;
+                case "--histogram":
+                    if (arguments.Length != 4
+                        || (Int32.Parse(arguments[3]) != 0
+                        && Int32.Parse(arguments[3]) != 1
+                        && Int32.Parse(arguments[3]) != 2)
+                        )
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    SaveOutput(inputImage1, p.Histogram(inputImage1, Int32.Parse(arguments[3])), "histogram");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time

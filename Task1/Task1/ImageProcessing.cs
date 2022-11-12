@@ -76,6 +76,66 @@ namespace ImageProcessing
                 (blue[mid] + blue[mid - 1]) / 2);
         }
 
+        // Task 2
+        public Bitmap Histogram(Bitmap image, int channel)
+        {
+            int[] histogramValues = new int[256];
+            int maxHistogramValue = -1;
+
+            for (int i = 0; i < image.Width; i++)
+            {
+                for (int j = 0; j < image.Height; j++)
+                {
+                    int value = -1;
+
+                    switch (channel)
+                    {
+                        case 0:
+                            value = image.GetPixel(i, j).R;
+                            break;
+                        case 1:
+                            value = image.GetPixel(i, j).G;
+                            break;
+                        case 2:
+                            value = image.GetPixel(i, j).B;
+                            break;
+                        default:
+                            continue; 
+                    }
+
+                    histogramValues[value]++;
+                    
+                    if (maxHistogramValue < histogramValues[value])
+                    {
+                        maxHistogramValue = histogramValues[value];
+                    }
+                }
+            }
+
+            
+            Bitmap histogramBitmap = new Bitmap(256, 256);
+
+            using (Graphics g = Graphics.FromImage(histogramBitmap))
+            {
+                g.FillRectangle(Brushes.White, 0, 0, histogramBitmap.Width, histogramBitmap.Height);
+
+                for (int i = 0; i < histogramValues.Length; i++)
+                {
+                    float pct = (float)histogramValues[i] / (float)maxHistogramValue * (float)256;
+
+                    Console.WriteLine(pct);
+
+                    g.DrawLine(Pens.Black,
+                        new Point(i, 255),
+                        new Point(i, 255 - (int)pct)
+                        );
+                }
+            }
+
+            return histogramBitmap;
+        }
+
+        // Task 1
         // -- BASIC OPERATIONS --
         public Bitmap ModifyBrightness(Bitmap image, int brightness)
         {
