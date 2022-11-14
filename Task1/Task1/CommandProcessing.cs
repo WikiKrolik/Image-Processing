@@ -59,6 +59,12 @@ namespace ImageProcessing
 --md <path1:string> <path2:string>
   Calculate maximum differece between two images.
 
+--hraleigh <path:string> <alpha:float> <gmin:int>
+  Brightness improvement based on histogram.
+
+--slined <path:string> <variant:int>
+  Line identification using a specific mask variant
+
 Remember that the float needs to be passed accordingly to your system localization, e.g.:
 POL: 1,4 (comma)
 US: 1.4 (dot)
@@ -334,9 +340,24 @@ US: 1.4 (dot)
                     }
 
                     inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Raleigh(LoadImage(arguments[2]), floatModifier, intModifier);
 
-                    SaveOutput(inputImage1, p.Raleigh(inputImage1, floatModifier, intModifier), "hraleigh");
-                    //SaveImage(p.Raleigh(inputImage1, floatModifier, intModifier), "test.bmp");
+                    SaveOutput(inputImage1, outputPicture, "hraleigh");
+
+                    break;
+                case "--slined":
+                    if (arguments.Length != 4
+                            || !Int32.TryParse(arguments[3], out intModifier)
+                        )
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.LineIdentification(LoadImage(arguments[2]), intModifier);
+
+                    SaveOutput(inputImage1, outputPicture, "slined");
 
                     break;
                 case "--help":

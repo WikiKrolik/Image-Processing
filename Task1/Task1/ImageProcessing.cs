@@ -204,6 +204,83 @@ namespace ImageProcessing
             return this.Negative(image);
         }
 
+        public Bitmap ApplyMask(Bitmap image, int[,] mask)
+        {
+            Bitmap processedImage = new Bitmap(image.Width, image.Height);
+
+            for (int x = 1; x < image.Width - 1; x++)
+            {
+                for (int y = 1; y < image.Height - 1; y++)
+                {
+                    Color pixelColor = image.GetPixel(x, y);
+                    int r = 0;
+                    int g = 0;
+                    int b = 0;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            r += mask[i, j] * image.GetPixel(x + i - 1, y + j - 1).R;
+                            g += mask[i, j] * image.GetPixel(x + i - 1, y + j - 1).G;
+                            b += mask[i, j] * image.GetPixel(x + i - 1, y + j - 1).B;
+                        }
+                    }
+
+                    processedImage.SetPixel(x, y, Color.FromArgb(
+                        pixelColor.A,
+                        Math.Clamp(r, 0, 255),
+                        Math.Clamp(g, 0, 255),
+                        Math.Clamp(b, 0, 255)
+                        )
+                    );
+                }
+            }
+
+            return processedImage;
+        }
+
+        public Bitmap LineIdentification(Bitmap image, int variant)
+        {
+            int[,] mask;
+
+            switch (variant)
+            {
+                case 0:
+                    mask = new int[,] {
+                        { -1, 2, -1 },
+                        { -1, 2, -1 },
+                        { -1, 2, -1 }
+                    };
+                    break;
+                case 1:
+                    mask = new int[,] {
+                        { -1, -1, 2 },
+                        { -1, 2, -1 },
+                        { 2, -1, -1 }
+                    };
+                    break;
+                case 2:
+                    mask = new int[,] {
+                        { -1, -1, -1 },
+                        { 2, 2, 2 },
+                        { -1, -1, -1 }
+                    };
+                    break;
+                case 3:
+                    mask = new int[,] {
+                        { 2, -1, -1 },
+                        { -1, 2, -1 },
+                        { -1, -1, 2 }
+                    };
+                    break;
+                default:
+                    throw new Exception("Invalid mask variant");
+            }
+
+            return this.ApplyMask(image, mask);
+        }
+
         // Task 1
         // -- BASIC OPERATIONS --
         public Bitmap ModifyBrightness(Bitmap image, int brightness)
