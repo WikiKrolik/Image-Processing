@@ -335,8 +335,8 @@ US: 1.4 (dot)
 
                     inputImage1 = LoadImage(arguments[2]);
 
-                    //SaveOutput(inputImage1, p.Raleigh(inputImage1, floatModifier, intModifier), "hraleigh");
-                    SaveImage(p.Raleigh(inputImage1, floatModifier, intModifier), "test.bmp");
+                    SaveOutput(inputImage1, p.Raleigh(inputImage1, floatModifier, intModifier), "hraleigh");
+                    //SaveImage(p.Raleigh(inputImage1, floatModifier, intModifier), "test.bmp");
 
                     break;
                 case "--help":

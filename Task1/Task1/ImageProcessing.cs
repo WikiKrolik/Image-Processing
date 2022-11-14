@@ -155,7 +155,7 @@ namespace ImageProcessing
                     sum += histogramValues[N];
                 }
 
-                float underRoot = (float)(2 * alpha * alpha * Math.Log(1.0 / (1.0 / (float)256 * (float)sum)));
+                float underRoot = (float)(2 * alpha * alpha * Math.Log(1.0 / (1.0 / (float)(image.Width * image.Height) * (float)sum)));
 
                 if (underRoot >= 0)
                 {
@@ -201,7 +201,7 @@ namespace ImageProcessing
                 }
             }
 
-            return image;
+            return this.Negative(image);
         }
 
         // Task 1
