@@ -360,6 +360,30 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "slined");
 
                     break;
+                case "--cmean":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    Console.WriteLine($"Mean: {p.Mean(inputImage1, intModifier)}");
+
+                    break;
+                case "--cstdev":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    Console.WriteLine($"Standard deviation: {p.StandardDeviation(inputImage1, intModifier)}");
+
+                    break;
                 case "--casyco":
                     if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
                     {
@@ -372,7 +396,6 @@ US: 1.4 (dot)
                     Console.WriteLine($"Asymmetry coefficient: {p.AsymmetryCoefficient(inputImage1, intModifier)}");
 
                     break;
-
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time
