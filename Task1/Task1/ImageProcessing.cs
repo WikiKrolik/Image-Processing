@@ -281,6 +281,71 @@ namespace ImageProcessing
             return this.ApplyMask(image, mask);
         }
 
+        public double Mean(Bitmap image, int channel)
+        {
+            int[] histogramValues;
+
+            switch (channel)
+            {
+                case 0:
+                    histogramValues = Histogram(image, 0);
+                    break;
+                case 1:
+                    histogramValues = Histogram(image, 1);
+                    break;
+                case 2:
+                    histogramValues = Histogram(image, 2);
+                    break;
+                default:
+                    histogramValues = Histogram(image, 0);
+                    break;
+            }
+
+            double sum = 0;
+
+            for (int m = 0; m < 256; m++)
+            {
+                sum += m * histogramValues[m];
+            }
+
+            return 1.0 / (image.Width * image.Height) * sum;
+        }
+
+        public double StandardDeviation(Bitmap image, int channel)
+        {
+            int[] histogramValues = Histogram(image, channel);
+
+            // D^2
+            double sum = 0;
+
+            double mean = Mean(image, 0);
+
+            for (int m = 0; m < 256; m++)
+            {
+                sum += (m - mean) * (m - mean) * histogramValues[m];
+
+            }
+
+            return Math.Sqrt(1.0 / (image.Width * image.Height) * sum);
+        }
+
+        public double AsymmetryCoefficient(Bitmap image, int channel)
+        {
+            int[] histogramValues = Histogram(image, channel);
+
+            double mean = Mean(image, 0);
+            double standardDeviation = StandardDeviation(image, channel);
+            double sum = 0;
+
+            for (int m = 0; m < 256; m++)
+            {
+                sum += (m - mean) * (m - mean) * (m - mean) * histogramValues[m];
+
+            }
+
+            return 1 / (standardDeviation * standardDeviation * standardDeviation) * 1 / (image.Width * image.Height) * sum;
+        }
+
         // Task 1
         // -- BASIC OPERATIONS --
         public Bitmap ModifyBrightness(Bitmap image, int brightness)
