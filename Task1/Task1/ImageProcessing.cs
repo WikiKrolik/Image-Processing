@@ -283,23 +283,7 @@ namespace ImageProcessing
 
         public double Mean(Bitmap image, int channel)
         {
-            int[] histogramValues;
-
-            switch (channel)
-            {
-                case 0:
-                    histogramValues = Histogram(image, 0);
-                    break;
-                case 1:
-                    histogramValues = Histogram(image, 1);
-                    break;
-                case 2:
-                    histogramValues = Histogram(image, 2);
-                    break;
-                default:
-                    histogramValues = Histogram(image, 0);
-                    break;
-            }
+            int[] histogramValues = Histogram(image, channel);
 
             double sum = 0;
 
