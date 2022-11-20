@@ -295,29 +295,33 @@ namespace ImageProcessing
             return 1.0 / (image.Width * image.Height) * sum;
         }
 
-        public double StandardDeviation(Bitmap image, int channel)
+        public double Variance(Bitmap image, int channel)
         {
             int[] histogramValues = Histogram(image, channel);
 
             // D^2
             double sum = 0;
 
-            double mean = Mean(image, 0);
+            double mean = Mean(image, channel);
 
             for (int m = 0; m < 256; m++)
             {
                 sum += (m - mean) * (m - mean) * histogramValues[m];
-
             }
 
-            return Math.Sqrt(1.0 / (image.Width * image.Height) * sum);
+            return 1.0 / (image.Width * image.Height) * sum;
+        }
+
+        public double StandardDeviation(Bitmap image, int channel)
+        {
+            return Math.Sqrt(Variance(image, channel));
         }
 
         public double AsymmetryCoefficient(Bitmap image, int channel)
         {
             int[] histogramValues = Histogram(image, channel);
 
-            double mean = Mean(image, 0);
+            double mean = Mean(image, channel);
             double standardDeviation = StandardDeviation(image, channel);
             double sum = 0;
 
