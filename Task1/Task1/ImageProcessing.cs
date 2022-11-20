@@ -328,7 +328,6 @@ namespace ImageProcessing
             for (int m = 0; m < 256; m++)
             {
                 sum += (m - mean) * (m - mean) * (m - mean) * histogramValues[m];
-
             }
 
             return 1 / (standardDeviation * standardDeviation * standardDeviation) * 1 / (image.Width * image.Height) * sum;

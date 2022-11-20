@@ -372,6 +372,18 @@ US: 1.4 (dot)
                     Console.WriteLine($"Mean: {p.Mean(inputImage1, intModifier)}");
 
                     break;
+                case "--cvariance":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    Console.WriteLine($"Mean: {p.Variance(inputImage1, intModifier)}");
+
+                    break;
                 case "--cstdev":
                     if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
                     {
