@@ -128,10 +128,33 @@ namespace ImageProcessing
                 {
                     float scaledValue = (float)histogramValues[i] / (float)histogramValues.Max() * (float)256;
 
-                    g.DrawLine(Pens.Black,
-                        new Point(i, 255),
-                        new Point(i, 255 - (int)scaledValue)
-                        );
+                    switch (channel){
+                        case 0:
+                            g.DrawLine(Pens.Red,
+                                new Point(i, 255),
+                                new Point(i, 255 - (int)scaledValue)
+                                );
+                            break;
+                        case 1:
+                            g.DrawLine(Pens.Green,
+                                new Point(i, 255),
+                                new Point(i, 255 - (int)scaledValue)
+                                );
+                            break;
+                        case 2:
+                            g.DrawLine(Pens.Blue,
+                                new Point(i, 255),
+                                new Point(i, 255 - (int)scaledValue)
+                                );
+                            break;
+                        default:
+                            g.DrawLine(Pens.Black,
+                                new Point(i, 255),
+                                new Point(i, 255 - (int)scaledValue)
+                                );
+                            break;
+                    }
+
                 }
             }
 
@@ -274,11 +297,82 @@ namespace ImageProcessing
                         { -1, -1, 2 }
                     };
                     break;
+                case 4:
+                    mask = new int[,] {
+                        { 0, 1, 0 },
+                        { 1, -4, 1 },
+                        { 0, 1, 0 }
+                    };
+                    break;
                 default:
                     throw new Exception("Invalid mask variant");
             }
 
             return this.ApplyMask(image, mask);
+        }
+
+        public Bitmap LineIdentificationOptimized(Bitmap image)
+        {
+            // Optimized for this mask
+            // { -1, 2, -1 }
+            // { -1, 2, -1 }
+            // { -1, 2, -1 }
+
+            Bitmap processedImage = new Bitmap(image.Width, image.Height);
+
+            for (int x = 1; x < image.Width - 1; x++)
+            {
+                for (int y = 1; y < image.Height - 1; y++)
+                {
+                    Color pixelColor = image.GetPixel(x, y);
+                    int r = 0;
+                    int g = 0;
+                    int b = 0;
+
+                    // R
+                    r -= image.GetPixel(x - 1, y - 1).R;
+                    r += 2 * image.GetPixel(x - 1, y).R;
+                    r -= image.GetPixel(x - 1, y + 1).R;
+                    r -= image.GetPixel(x, y - 1).R;
+                    r += 2 * image.GetPixel(x, y ).R;
+                    r -= image.GetPixel(x, y + 1).R;
+                    r -= image.GetPixel(x + 1, y - 1).R;
+                    r += 2 * image.GetPixel(x + 1, y).R;
+                    r -= image.GetPixel(x + 1, y + 1).R;
+
+                    // G
+                    g -= image.GetPixel(x - 1, y - 1).G;
+                    g += 2 * image.GetPixel(x - 1, y).G;
+                    g -= image.GetPixel(x - 1, y + 1).G;
+                    g -= image.GetPixel(x, y - 1).G;
+                    g += 2 * image.GetPixel(x, y).G;
+                    g -= image.GetPixel(x, y + 1).G;
+                    g -= image.GetPixel(x + 1, y - 1).G;
+                    g += 2 * image.GetPixel(x + 1, y).G;
+                    g -= image.GetPixel(x + 1, y + 1).G;
+
+                    // B
+                    b -= image.GetPixel(x - 1, y - 1).B;
+                    b += 2 * image.GetPixel(x - 1, y).B;
+                    b -= image.GetPixel(x - 1, y + 1).B;
+                    b -= image.GetPixel(x, y - 1).B;
+                    b += 2 * image.GetPixel(x, y).B;
+                    b -= image.GetPixel(x, y + 1).B;
+                    b -= image.GetPixel(x + 1, y - 1).B;
+                    b += 2 * image.GetPixel(x + 1, y).B;
+                    b -= image.GetPixel(x + 1, y + 1).B;
+
+                    processedImage.SetPixel(x, y, Color.FromArgb(
+                        pixelColor.A,
+                        Math.Clamp(r, 0, 255),
+                        Math.Clamp(g, 0, 255),
+                        Math.Clamp(b, 0, 255)
+                        )
+                    );
+                }
+            }
+
+            return processedImage;
         }
 
         public double Mean(Bitmap image, int channel)

@@ -360,6 +360,19 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "slined");
 
                     break;
+                case "--slinedopt":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.LineIdentificationOptimized(LoadImage(arguments[2]));
+
+                    SaveOutput(inputImage1, outputPicture, "slinedopt");
+
+                    break;
                 case "--cmean":
                     if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
                     {
