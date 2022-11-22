@@ -373,7 +373,7 @@ namespace ImageProcessing
             {
                 sum += Math.Pow((m - b), 4) * H[m];
             }
-            return ((1 / Math.Pow(σ, 4)) * (1/ (image.Width *image.Height * sum))) -3;
+            return (1 / Math.Pow(σ, 4)) * (1/ (image.Width *image.Height) * sum) -3;
         }
 
         public double VariationCoefficientII(Bitmap image, int channel)
@@ -387,5 +387,16 @@ namespace ImageProcessing
             return Math.Pow((1/(image.Width * image.Height)), 2) * sum;
         }
 
+        public double InformationSourceEntropy(Bitmap image, int channel)
+        {
+            int[] H = Histogram(image, channel);
+            double sum = 0;
+            int N = image.Width * image.Height;
+            for (int m = 0; m < 256; m++)
+            {
+                sum += H[m] * Math.Log2(H[m] / N);
+            }
+            return (-1/N) * sum;
+        }
     }
 }

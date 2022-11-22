@@ -421,6 +421,17 @@ US: 1.4 (dot)
                     Console.WriteLine($"Asymmetry coefficient: {p.AsymmetryCoefficient(inputImage1, intModifier)}");
 
                     break;
+                case "--cvarcoi":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    Console.WriteLine($" Variation coefficient I: {p.VariationCoefficientI(inputImage1, intModifier)}");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time
