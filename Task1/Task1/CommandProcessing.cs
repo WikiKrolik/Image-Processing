@@ -432,6 +432,38 @@ US: 1.4 (dot)
                     Console.WriteLine($" Variation coefficient I: {p.VariationCoefficientI(inputImage1, intModifier)}");
 
                     break;
+                case "--cflaco":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    Console.WriteLine($" Flattening coefficient: {p.FlatteningCoefficient(inputImage1, intModifier)}");
+                    break;
+                case "--cvarcoii":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    Console.WriteLine($" Variation coefficient II: {p.VariationCoefficientII(inputImage1, intModifier)}");
+                    break;
+                case "--centropy":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+
+                    Console.WriteLine($" Information source entropy: {p.InformationSourceEntropy(inputImage1, intModifier)}");
+
+                    break;
+
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time
