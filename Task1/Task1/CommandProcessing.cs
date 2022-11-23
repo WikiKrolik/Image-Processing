@@ -463,6 +463,18 @@ US: 1.4 (dot)
                     Console.WriteLine($" Information source entropy: {p.InformationSourceEntropy(inputImage1, intModifier)}");
 
                     break;
+                case "--orobertsi":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.RobertsOperationI(LoadImage(arguments[2]));
+
+                    SaveOutput(inputImage1, outputPicture, "Roberts operation I");
+
+                    break;
 
                 case "--help":
                     Console.WriteLine(helpMessage);

@@ -306,6 +306,32 @@ namespace ImageProcessing
             return processedImage;
         }
 
+        public Bitmap RobertsOperationI(Bitmap image)
+        {
+            for (int x = 0; x < image.Width; x++)
+            {
+                for (int y = 0; y < image.Height; y++)
+                {
+
+                    if (y == image.Height - 1 || x == image.Width - 1)
+                    {
+                        image.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                        continue;
+                    }
+                    Color pixelColor = image.GetPixel(x, y);
+
+                    int pixel = (int)(Math.Pow(Math.Pow(pixelColor.R - image.GetPixel(x + 1, y + 1).R, 2) + Math.Pow(image.GetPixel(x, y + 1).R - image.GetPixel(x + 1, y).R, 2), 0.5));
+                    // double pixel = Math.Pow(Math.Pow(pixelColor.R - image.GetPixel(x + 1, y + 1).R, 2) + Math.Pow(image.GetPixel(x, y + 1).R - image.GetPixel(x + 1, y).R, 2), 0.5);
+                    //double pixel = Math.Pow(Math.Pow(pixelColor.R - image.GetPixel(x + 1, y + 1).R, 2) + Math.Pow(image.GetPixel(x, y + 1).R - image.GetPixel(x + 1, y).R, 2), 0.5);
+                    pixel = Math.Clamp(pixel, 0, 255);
+
+                    image.SetPixel(x, y, Color.FromArgb( pixel, pixel, pixel));
+                }
+            }
+
+            return image;
+        }
+
         public double Mean(Bitmap image, int channel)
         {
             int[] histogramValues = Histogram(image, channel);
