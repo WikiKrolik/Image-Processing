@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wu1yznkMocCNWCpkLnFqZz148SzZatfkHeUgH0k9vxV5r36MoFmtkSrn0cy9lf4WeNpctEcgQkCOMOZ4h4zGbQ==",
+  "dgSpecHash": "FpZnvy8PrJNumYNsxlTBtaIrE6d73nk/zriWort9F8TXCppQkFWdVEAEdUkmsC9vEzSeoJy2tRquDvQoTv2c4A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Artur\\Documents\\vs2022\\imageprocessing\\Task1\\Task1\\Task1.csproj",
+  "projectFilePath": "C:\\Users\\Artur\\Documents\\vs2022\\imageprocessing\\Task1\\Task1\\ImageProcessing.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Artur\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\Artur\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"

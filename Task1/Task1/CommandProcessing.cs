@@ -69,7 +69,7 @@ Remember that the float needs to be passed accordingly to your system localizati
 POL: 1,4 (comma)
 US: 1.4 (dot)
 ";
-        static Task1 p = new Task1();
+        static ImageProcessing p = new ImageProcessing();
 
         public static Bitmap LoadImage(string name)
         {

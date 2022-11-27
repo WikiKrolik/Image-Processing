@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageProcessing
 {
-    internal partial class Task1
+    internal partial class ImageProcessing
     {
         // Task 2
         public Bitmap HistogramToImage(Bitmap image, int channel)

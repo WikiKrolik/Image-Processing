@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 
 namespace ImageProcessing
 {
-    internal partial class Task1
+    internal partial class ImageProcessing
     {
         // -- HELPERS --
         // Linear interpolation

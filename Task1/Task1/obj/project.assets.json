@@ -128,9 +128,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Artur\\Documents\\vs2022\\imageprocessing\\Task1\\Task1\\Task1.csproj",
-      "projectName": "Task1",
-      "projectPath": "C:\\Users\\Artur\\Documents\\vs2022\\imageprocessing\\Task1\\Task1\\Task1.csproj",
+      "projectUniqueName": "C:\\Users\\Artur\\Documents\\vs2022\\imageprocessing\\Task1\\Task1\\ImageProcessing.csproj",
+      "projectName": "ImageProcessing",
+      "projectPath": "C:\\Users\\Artur\\Documents\\vs2022\\imageprocessing\\Task1\\Task1\\ImageProcessing.csproj",
       "packagesPath": "C:\\Users\\Artur\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Artur\\Documents\\vs2022\\imageprocessing\\Task1\\Task1\\obj\\",
       "projectStyle": "PackageReference",
