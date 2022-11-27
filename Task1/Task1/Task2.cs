@@ -141,20 +141,14 @@ namespace ImageProcessing
                 int sum = 0;
                 int N = 0;
 
-                for (N = 0; N < f; N++)
+                for (N = 0; N <= f; N++)
                 {
                     sum += histogramValues[N];
                 }
 
                 float underRoot = (float)(2 * alpha * alpha * Math.Log(1.0 / (1.0 / (float)(image.Width * image.Height) * (float)sum)));
 
-                if (underRoot >= 0)
-                {
-                    return Math.Clamp(minBrightness + (int)Math.Pow(underRoot, 0.5), 0, 255);
-                }
-
-                return f;
-
+                return Math.Clamp(minBrightness + (int)Math.Pow(underRoot, 0.5), 0, 255);
             }
 
             int[] newBrightnessR = new int[256];
