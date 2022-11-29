@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImageProcessing
 {
@@ -84,7 +79,7 @@ US: 1.4 (dot)
 
         private static void SaveOutput(Bitmap original, Bitmap output, String operation)
         {
-            String path = $".\\{ DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}_{ operation}";
+            String path = $".\\{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}_{operation}";
             Directory.CreateDirectory(path);
             SaveImage(original, $"{path}\\original.bmp");
             SaveImage(output, $"{path}\\output.bmp");

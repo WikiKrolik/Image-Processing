@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-
-namespace ImageProcessing
+﻿namespace ImageProcessing
 {
     internal class Program
     {

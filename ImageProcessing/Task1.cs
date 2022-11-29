@@ -104,9 +104,9 @@ namespace ImageProcessing
 
         // 0 < contrast < 1 for less contrast
         // contrast > 1 for more contrast
-        public Bitmap ModifyContrast(Bitmap image, int threshold) 
+        public Bitmap ModifyContrast(Bitmap image, int threshold)
         {
-         
+
             float contrast = (float)Math.Pow((100.0 + threshold) / 100.0, 2);
 
             for (int x = 0; x < image.Width; x++)
@@ -126,7 +126,7 @@ namespace ImageProcessing
                     image.SetPixel(x, y, Color.FromArgb(pixelColor.A, r, g, b));
                 }
             }
-            
+
             return image;
         }
 
@@ -272,8 +272,8 @@ namespace ImageProcessing
             return image;
         }
 
-          public Bitmap HarmonicFilter(Bitmap image, int radius)
-          {
+        public Bitmap HarmonicFilter(Bitmap image, int radius)
+        {
             int w = image.Width;
             int h = image.Height;
 
@@ -284,13 +284,13 @@ namespace ImageProcessing
                     float red = 0f;
                     float green = 0f;
                     float blue = 0f;
-            
+
                     int pixel = 0;
-                    
+
                     for (int i = x - radius; i <= x + radius; i++)
                     {
                         if (i < 0 || i >= image.Width) continue;
- 
+
                         for (int j = y - radius; j <= y + radius; j++)
                         {
                             if (j < 0 || j >= image.Height) continue;
@@ -303,16 +303,16 @@ namespace ImageProcessing
                             pixel++;
                         }
                     }
-                    
-                    int redHarmonic = (int)(pixel/ red);
-                    int greenHarmonic = (int)(pixel/ green);
-                    int blueHarmonic = (int)(pixel/ blue);
+
+                    int redHarmonic = (int)(pixel / red);
+                    int greenHarmonic = (int)(pixel / green);
+                    int blueHarmonic = (int)(pixel / blue);
 
                     redHarmonic = Math.Clamp(redHarmonic, 0, 255);
                     greenHarmonic = Math.Clamp(greenHarmonic, 0, 255);
                     blueHarmonic = Math.Clamp(blueHarmonic, 0, 255);
 
-                    image.SetPixel(x, y,Color.FromArgb(image.GetPixel(x, y).A, redHarmonic, greenHarmonic, blueHarmonic));
+                    image.SetPixel(x, y, Color.FromArgb(image.GetPixel(x, y).A, redHarmonic, greenHarmonic, blueHarmonic));
                 }
             }
 
@@ -357,7 +357,7 @@ namespace ImageProcessing
             float maxR = 0;
             float maxG = 0;
             float maxB = 0;
-            
+
             float peakMeanSquareErorr = 0;
 
             for (int i = 0; i < image1.Width; i++)
@@ -383,7 +383,7 @@ namespace ImageProcessing
             }
 
             float result = (peakMeanSquareErorr / image1.Width / image1.Height) / (((maxR + maxG + maxB) / 3) * ((maxR + maxG + maxB) / 3));
-            
+
             return result;
         }
 
@@ -412,7 +412,7 @@ namespace ImageProcessing
                     dif += (redDif * redDif + greenDif * greenDif + blueDif * blueDif) / 3;
                 }
             }
-            
+
             return 10 * Math.Log10(sum / dif);
         }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace ImageProcessing
 {
@@ -319,7 +314,7 @@ namespace ImageProcessing
                     //double pixel = Math.Pow(Math.Pow(pixelColor.R - image.GetPixel(x + 1, y + 1).R, 2) + Math.Pow(image.GetPixel(x, y + 1).R - image.GetPixel(x + 1, y).R, 2), 0.5);
                     pixel = Math.Clamp(pixel, 0, 255);
 
-                    image.SetPixel(x, y, Color.FromArgb( pixel, pixel, pixel));
+                    image.SetPixel(x, y, Color.FromArgb(pixel, pixel, pixel));
                 }
             }
 
@@ -389,11 +384,11 @@ namespace ImageProcessing
             double o = StandardDeviation(image, channel);
             double b = Mean(image, channel);
             double sum = 0;
-            for(int m = 0; m < 256; m++)
+            for (int m = 0; m < 256; m++)
             {
                 sum += Math.Pow((m - b), 4) * H[m] - 3.0;
             }
-            return (1.0 / Math.Pow(o, 4)) * (1.0/ (image.Width *image.Height) * sum);
+            return (1.0 / Math.Pow(o, 4)) * (1.0 / (image.Width * image.Height) * sum);
         }
 
         public double VariationCoefficientII(Bitmap image, int channel)
@@ -404,7 +399,7 @@ namespace ImageProcessing
             {
                 sum += Math.Pow(H[m], 2);
             }
-            return Math.Pow((1.0/(image.Width * image.Height)), 2) * sum;
+            return Math.Pow((1.0 / (image.Width * image.Height)), 2) * sum;
         }
 
         public double InformationSourceEntropy(Bitmap image, int channel)
@@ -419,7 +414,7 @@ namespace ImageProcessing
                     sum += H[m] * Math.Log2((double)H[m] / N);
                 }
             }
-            return (-1.0/N) * sum;
+            return (-1.0 / N) * sum;
         }
     }
 }
