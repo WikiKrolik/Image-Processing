@@ -470,7 +470,19 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "Roberts operation I");
 
                     break;
+                case "--mdila":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
 
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Dilation(LoadImage(arguments[2]), intModifier);
+
+                    SaveImage(outputPicture, "./dupa.png");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time
