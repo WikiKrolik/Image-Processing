@@ -186,5 +186,15 @@ namespace ImageProcessing
 
             return erodedImage;
         }
+
+        public Bitmap Opening(Bitmap image, int structuralElementVariant)
+        {
+            return Dilation(Erosion(image, structuralElementVariant), structuralElementVariant);
+        }
+
+        public Bitmap Closing(Bitmap image, int structuralElementVariant)
+        {
+            return Erosion(Dilation(image, structuralElementVariant), structuralElementVariant);
+        }
     }
 }
