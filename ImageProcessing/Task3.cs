@@ -156,5 +156,35 @@ namespace ImageProcessing
             return dilatedImage;
         }
 
+        public Bitmap Erosion(Bitmap image, int structuralElementVariant)
+        {
+            Bitmap erodedImage = AddPaddding(image, 0);
+
+            for (int x = 1; x < image.Width - 1; x++)
+            {
+                for (int y = 1; y < image.Height - 1; y++)
+                {
+                    if (image.GetPixel(x, y).R != 0 || image.GetPixel(x, y).G != 0 || image.GetPixel(x, y).B != 0)
+                    {
+                        continue;
+                    }
+
+                    for (int maskX = -1; maskX < 2; maskX++)
+                    {
+                        for (int maskY = -1; maskY < 2; maskY++)
+                        {
+                            if (structuralElements[structuralElementVariant, maskY + 1, maskX + 1] == -1)
+                            {
+                                continue;
+                            }
+
+                            erodedImage.SetPixel(x + maskX, y + maskY, Color.FromArgb(0, 0, 0));
+                        }
+                    }
+                }
+            }
+
+            return erodedImage;
+        }
     }
 }
