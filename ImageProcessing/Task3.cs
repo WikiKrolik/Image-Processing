@@ -133,7 +133,7 @@ namespace ImageProcessing
             {
                 for (int y = 1; y < image.Height - 1; y++)
                 {
-                    if (image.GetPixel(x, y).R != 0 || image.GetPixel(x, y).G != 0 || image.GetPixel(x, y).B != 0)
+                    if (image.GetPixel(x, y).R != 255 || image.GetPixel(x, y).G != 255 || image.GetPixel(x, y).B != 255)
                     {
                         continue;
                     }
@@ -147,7 +147,7 @@ namespace ImageProcessing
                                 continue;
                             }
 
-                            dilatedImage.SetPixel(x + maskX, y + maskY, Color.FromArgb(0, 0, 0));
+                            dilatedImage.SetPixel(x + maskX, y + maskY, Color.FromArgb(255, 255, 255));
                         }
                     }
                 }
