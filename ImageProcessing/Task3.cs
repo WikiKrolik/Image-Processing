@@ -178,7 +178,7 @@ namespace ImageProcessing
                                 continue;
                             }
 
-                            erodedImage.SetPixel(x + maskX, y + maskY, Color.FromArgb(0, 0, 0));
+                            erodedImage.SetPixel(x + maskX, y + maskY, Color.Black);
                         }
                     }
                 }
@@ -195,6 +195,39 @@ namespace ImageProcessing
         public Bitmap Closing(Bitmap image, int structuralElementVariant)
         {
             return Erosion(Dilation(image, structuralElementVariant), structuralElementVariant);
+        }
+
+        public Bitmap HitOrMiss(Bitmap image, int structuralElementVariant)
+        {
+            Bitmap transformedImage = new Bitmap(image.Width, image.Height);
+
+            for (int x = 1; x < image.Width - 1; x++)
+            {
+                for (int y = 1; y < image.Height - 1; y++)
+                {
+                    bool HMTSatisfied = true;
+
+                    for (int maskX = -1; maskX < 2; maskX++)
+                    {
+                        for (int maskY = -1; maskY < 2; maskY++)
+                        {
+                            if (structuralElements[structuralElementVariant, maskY + 1, maskX + 1] == -1)
+                            {
+                                continue;
+                            }
+
+                            if (structuralElements[structuralElementVariant, maskY + 1, maskX + 1] * 255 != image.GetPixel(x + maskX, y + maskY).R)
+                            {
+                                HMTSatisfied = false;
+                            }
+                        }
+                    }
+
+                    transformedImage.SetPixel(x, y, HMTSatisfied ? Color.White : Color.Black);
+                }
+            }
+
+            return transformedImage;
         }
     }
 }

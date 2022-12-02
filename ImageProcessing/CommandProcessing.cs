@@ -478,7 +478,7 @@ US: 1.4 (dot)
                     }
 
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.Opening(LoadImage(arguments[2]), intModifier);
+                    outputPicture = p.HitOrMiss(LoadImage(arguments[2]), intModifier);
 
                     SaveImage(outputPicture, "./dupa.png");
 
