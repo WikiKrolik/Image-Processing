@@ -164,7 +164,7 @@ namespace ImageProcessing
             {
                 for (int y = 1; y < image.Height - 1; y++)
                 {
-                    if (image.GetPixel(x, y).R != 0 || image.GetPixel(x, y).G != 0 || image.GetPixel(x, y).B != 0)
+                    if (image.GetPixel(x, y) != Color.Black)
                     {
                         continue;
                     }
