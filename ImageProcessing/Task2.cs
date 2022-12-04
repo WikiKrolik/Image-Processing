@@ -254,53 +254,118 @@ namespace ImageProcessing
             // { -1, 2, -1 }
             // { -1, 2, -1 }
             // { -1, 2, -1 }
+            
+            int[] r0 = new int[3], r1 = new int[3], r2 = new int[3];
+            int[] g0 = new int[3], g1 = new int[3], g2 = new int[3];
+            int[] b0 = new int[3], b1 = new int[3], b2 = new int[3];
 
             Bitmap processedImage = new Bitmap(image.Width, image.Height);
 
-            for (int x = 1; x < image.Width - 1; x++)
+            for (int y = 1; y < image.Width - 1; y++)
             {
-                for (int y = 1; y < image.Height - 1; y++)
+                r0[0] = image.GetPixel(0, y - 1).R;
+                r0[1] = image.GetPixel(0, y).R;
+                r0[2] = image.GetPixel(0, y + 1).R;
+
+                r1[0] = image.GetPixel(1, y - 1).R;
+                r1[1] = image.GetPixel(1, y).R;
+                r1[2] = image.GetPixel(1, y + 1).R;
+
+                g0[0] = image.GetPixel(0, y - 1).G;
+                g0[1] = image.GetPixel(0, y).G;
+                g0[2] = image.GetPixel(0, y + 1).G;
+
+                g1[0] = image.GetPixel(1, y - 1).G;
+                g1[1] = image.GetPixel(1, y).G;
+                g1[2] = image.GetPixel(1, y + 1).G;
+
+                b0[0] = image.GetPixel(0, y - 1).B;
+                b0[1] = image.GetPixel(0, y).B;
+                b0[2] = image.GetPixel(0, y + 1).B;
+
+                b1[0] = image.GetPixel(1, y - 1).B;
+                b1[1] = image.GetPixel(1, y).B;
+                b1[2] = image.GetPixel(1, y + 1).B;
+
+                for (int x = 1; x < image.Height - 1; x++)
                 {
-                    Color pixelColor = image.GetPixel(x, y);
-                    int r = 0;
-                    int g = 0;
-                    int b = 0;
+                    int r = 0, g = 0, b = 0;
 
-                    // R
-                    r -= image.GetPixel(x - 1, y - 1).R;
-                    r += 2 * image.GetPixel(x - 1, y).R;
-                    r -= image.GetPixel(x - 1, y + 1).R;
-                    r -= image.GetPixel(x, y - 1).R;
-                    r += 2 * image.GetPixel(x, y).R;
-                    r -= image.GetPixel(x, y + 1).R;
-                    r -= image.GetPixel(x + 1, y - 1).R;
-                    r += 2 * image.GetPixel(x + 1, y).R;
-                    r -= image.GetPixel(x + 1, y + 1).R;
+                    if (x % 3 == 0)
+                    {
+                        r2[0] = image.GetPixel(x + 1, y - 1).R;
+                        r2[1] = image.GetPixel(x + 1, y).R;
+                        r2[2] = image.GetPixel(x + 1, y + 1).R;
 
-                    // G
-                    g -= image.GetPixel(x - 1, y - 1).G;
-                    g += 2 * image.GetPixel(x - 1, y).G;
-                    g -= image.GetPixel(x - 1, y + 1).G;
-                    g -= image.GetPixel(x, y - 1).G;
-                    g += 2 * image.GetPixel(x, y).G;
-                    g -= image.GetPixel(x, y + 1).G;
-                    g -= image.GetPixel(x + 1, y - 1).G;
-                    g += 2 * image.GetPixel(x + 1, y).G;
-                    g -= image.GetPixel(x + 1, y + 1).G;
+                        g2[0] = image.GetPixel(x + 1, y - 1).G;
+                        g2[1] = image.GetPixel(x + 1, y).G;
+                        g2[2] = image.GetPixel(x + 1, y + 1).G;
 
-                    // B
-                    b -= image.GetPixel(x - 1, y - 1).B;
-                    b += 2 * image.GetPixel(x - 1, y).B;
-                    b -= image.GetPixel(x - 1, y + 1).B;
-                    b -= image.GetPixel(x, y - 1).B;
-                    b += 2 * image.GetPixel(x, y).B;
-                    b -= image.GetPixel(x, y + 1).B;
-                    b -= image.GetPixel(x + 1, y - 1).B;
-                    b += 2 * image.GetPixel(x + 1, y).B;
-                    b -= image.GetPixel(x + 1, y + 1).B;
+                        b2[0] = image.GetPixel(x + 1, y - 1).B;
+                        b2[1] = image.GetPixel(x + 1, y).B;
+                        b2[2] = image.GetPixel(x + 1, y + 1).B;
+                    }
+                    else if (x % 3 == 1)
+                    {
+                        r0[0] = image.GetPixel(x + 1, y - 1).R;
+                        r0[1] = image.GetPixel(x + 1, y).R;
+                        r0[2] = image.GetPixel(x + 1, y + 1).R;
+
+                        g0[0] = image.GetPixel(x + 1, y - 1).G;
+                        g0[1] = image.GetPixel(x + 1, y).G;
+                        g0[2] = image.GetPixel(x + 1, y + 1).G;
+
+                        b0[0] = image.GetPixel(x + 1, y - 1).B;
+                        b0[1] = image.GetPixel(x + 1, y).B;
+                        b0[2] = image.GetPixel(x + 1, y + 1).B;
+                    }
+                    else 
+                    {
+                        r1[0] = image.GetPixel(x + 1, y - 1).R;
+                        r1[1] = image.GetPixel(x + 1, y).R;
+                        r1[2] = image.GetPixel(x + 1, y + 1).R;
+
+                        g1[0] = image.GetPixel(x + 1, y - 1).G;
+                        g1[1] = image.GetPixel(x + 1, y).G;
+                        g1[2] = image.GetPixel(x + 1, y + 1).G;
+
+                        b1[0] = image.GetPixel(x + 1, y - 1).B;
+                        b1[1] = image.GetPixel(x + 1, y).B;
+                        b1[2] = image.GetPixel(x + 1, y + 1).B;
+                    }
+
+                    r -= r0[0];
+                    r += r0[1] + r0[1];
+                    r -= r0[2];
+                    r -= r1[0];
+                    r += r1[1] + r1[1];
+                    r -= r1[2];
+                    r -= r2[0];
+                    r += r2[1] + r2[1];
+                    r -= r2[2];
+
+                    g -= g0[0];
+                    g += g0[1] + g0[1];
+                    g -= g0[2];
+                    g -= g1[0];
+                    g += g1[1] + g1[1];
+                    g -= g1[2];
+                    g -= g2[0];
+                    g += g2[1] + g2[1];
+                    g -= g2[2];
+
+                    b -= b0[0];
+                    b += b0[1] + b0[1];
+                    b -= b0[2];
+                    b -= b1[0];
+                    b += b1[1] + b1[1];
+                    b -= b1[2];
+                    b -= b2[0];
+                    b += b2[1] + b2[1];
+                    b -= b2[2];
 
                     processedImage.SetPixel(x, y, Color.FromArgb(
-                        pixelColor.A,
+                        1,
                         Math.Clamp(r, 0, 255),
                         Math.Clamp(g, 0, 255),
                         Math.Clamp(b, 0, 255)
