@@ -124,8 +124,12 @@ namespace ImageProcessing
 
             return processedImage;
         }
-        public Bitmap Raleigh(Bitmap image, float alpha, int minBrightness)
+        public Bitmap Raleigh(Bitmap image, int minBrightness, int maxBrightness)
         {
+            // Becasue of .Negative() operation at the end, the values need to be adjusted
+            int adjustedMinBrightness = 255 - maxBrightness;
+            int adjustedMaxBrightness = 255 - minBrightness;
+
             int[] histogramValuesR = Histogram(image, 0);
             int[] histogramValuesG = Histogram(image, 1);
             int[] histogramValuesB = Histogram(image, 2);
@@ -136,6 +140,18 @@ namespace ImageProcessing
                 int sum = 0;
                 int N = 0;
 
+                // find prev max brightness and calculate correct alpha for it
+                int prevMaxBrightness = 0;
+                for (int i = 255; i > 0; i--)
+                {
+                    if (histogramValues[i] != 0)
+                    {
+                        prevMaxBrightness = i;
+                        break;
+                    }
+                }
+                float alpha = ((float)adjustedMaxBrightness - (float)adjustedMinBrightness) / (float)Math.Sqrt(2 * Math.Log((float)(image.Width * image.Height) / (float)histogramValues[prevMaxBrightness]));
+
                 for (N = 0; N <= f; N++)
                 {
                     sum += histogramValues[N];
@@ -143,7 +159,7 @@ namespace ImageProcessing
 
                 float underRoot = (float)(2 * alpha * alpha * Math.Log(1.0 / (1.0 / (float)(image.Width * image.Height) * (float)sum)));
 
-                return Math.Clamp(minBrightness + (int)Math.Pow(underRoot, 0.5), 0, 255);
+                return Math.Clamp(adjustedMinBrightness + (int)Math.Pow(underRoot, 0.5), 0, 255);
             }
 
             int[] newBrightnessR = new int[256];
@@ -183,6 +199,7 @@ namespace ImageProcessing
 
             return this.Negative(image);
         }
+
         public Bitmap LineIdentification(Bitmap image, int variant)
         {
             int[,] mask;

@@ -96,6 +96,7 @@ US: 1.4 (dot)
             }
 
             int intModifier = 0;
+            int intModifier2 = 0;
             float floatModifier = 0;
 
             Bitmap inputImage1;
@@ -326,8 +327,8 @@ US: 1.4 (dot)
                     break;
                 case "--hraleigh":
                     if (arguments.Length != 5
-                        || !float.TryParse(arguments[3], out floatModifier)
-                        || !Int32.TryParse(arguments[4], out intModifier)
+                        || !Int32.TryParse(arguments[3], out intModifier)
+                        || !Int32.TryParse(arguments[4], out intModifier2)
                         )
                     {
                         Console.WriteLine(invalidMessage);
@@ -335,7 +336,7 @@ US: 1.4 (dot)
                     }
 
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.Raleigh(LoadImage(arguments[2]), floatModifier, intModifier);
+                    outputPicture = p.Raleigh(LoadImage(arguments[2]), intModifier, intModifier2);
 
                     SaveOutput(inputImage1, outputPicture, "hraleigh");
 
