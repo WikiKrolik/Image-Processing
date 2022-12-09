@@ -403,6 +403,68 @@ namespace ImageProcessing
             return image;
         }
 
+
+        public Bitmap Sobel(Bitmap image)
+        {
+            Bitmap processedImage = new Bitmap(image.Width, image.Height);
+
+            for (int x = 1; x < image.Width - 1; x++)
+            {
+                for (int y = 1; y < image.Height - 1; y++)
+                {
+                    float xxR = image.GetPixel(x + 1, y - 1).R
+                        + 2 * image.GetPixel(x + 1, y).R
+                        + image.GetPixel(x + 1, y + 1).R
+                        - image.GetPixel(x - 1, y - 1).R
+                        - 2 * image.GetPixel(x - 1, y).R
+                        - image.GetPixel(x - 1, y + 1).R;
+
+                    float yyR = image.GetPixel(x - 1, y - 1).R
+                        + 2 * image.GetPixel(x, y - 1).R
+                        + image.GetPixel(x + 1, y - 1).R
+                        - image.GetPixel(x - 1, y + 1).R
+                        - 2 * image.GetPixel(x, y + 1).R
+                        - image.GetPixel(x + 1, y + 1).R;
+
+                    float xxG = image.GetPixel(x + 1, y - 1).G
+                        + 2 * image.GetPixel(x + 1, y).G
+                        + image.GetPixel(x + 1, y + 1).G
+                        - image.GetPixel(x - 1, y - 1).G
+                        - 2 * image.GetPixel(x - 1, y).G
+                        - image.GetPixel(x - 1, y + 1).G;
+
+                    float yyG = image.GetPixel(x - 1, y - 1).G
+                        + 2 * image.GetPixel(x, y - 1).G
+                        + image.GetPixel(x + 1, y - 1).G
+                        - image.GetPixel(x - 1, y + 1).G
+                        - 2 * image.GetPixel(x, y + 1).G
+                        - image.GetPixel(x + 1, y + 1).G;
+
+                    float xxB = image.GetPixel(x + 1, y - 1).B
+                        + 2 * image.GetPixel(x + 1, y).B
+                        + image.GetPixel(x + 1, y + 1).B
+                        - image.GetPixel(x - 1, y - 1).B
+                        - 2 * image.GetPixel(x - 1, y).B
+                        - image.GetPixel(x - 1, y + 1).B;
+
+                    float yyB = image.GetPixel(x - 1, y - 1).B
+                        + 2 * image.GetPixel(x, y - 1).B
+                        + image.GetPixel(x + 1, y - 1).B
+                        - image.GetPixel(x - 1, y + 1).B
+                        - 2 * image.GetPixel(x, y + 1).B
+                        - image.GetPixel(x + 1, y + 1).B;
+
+                    processedImage.SetPixel(x, y, Color.FromArgb(1,
+                        (int)Math.Clamp(Math.Sqrt(xxR * xxR + yyR * yyR), 0, 255),
+                        (int)Math.Clamp(Math.Sqrt(xxR * xxR + yyR * yyR), 0, 255),
+                        (int)Math.Clamp(Math.Sqrt(xxR * xxR + yyR * yyR), 0, 255)));
+                }
+            }
+
+            return processedImage;
+        }
+
+
         public double Mean(Bitmap image, int channel)
         {
             int[] histogramValues = Histogram(image, channel);
