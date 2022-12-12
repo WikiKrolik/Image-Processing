@@ -54,11 +54,47 @@ namespace ImageProcessing
 --md <path1:string> <path2:string>
   Calculate maximum differece between two images.
 
+--histogram <path:string> <channel:int>
+  Histogram creation
+
 --hraleigh <path:string> <alpha:float> <gmin:int>
   Brightness improvement based on histogram.
 
+--cmean <path:string> <channel:int>
+  Mean calculation
+
+--cvariance <path:string> <channel:int>
+  Variance calculation
+
+--cstdev <path:string> <channel:int>
+  Standard deviation calculation
+
+--cvarcoi <path:string> <channel:int>
+  Variation coefficient I
+
+--casyco <path:string> <channel:int>
+  Asymmetry coefficient
+
+--cflaco <path:string> <channel:int>
+  Flattening coefficient
+
+--cvarcoii <path:string> <channel:int>
+  Variation coefficient II
+
+--centropy <path:string> <channel:int>
+  Information source entropy
+
 --slined <path:string> <variant:int>
-  Line identification using a specific mask variant
+  Line identification using one of mask variants
+
+--slinedopt <path:string>
+  Line identification using a optimized process for specific mask
+
+--orobertsi <path:string>
+  Roberts operation I
+
+--osobel <path:string> <channel:int>
+  Sobel operation
 
 Remember that the float needs to be passed accordingly to your system localization, e.g.:
 POL: 1,4 (comma)
@@ -425,7 +461,7 @@ US: 1.4 (dot)
                     }
                     inputImage1 = LoadImage(arguments[2]);
 
-                    Console.WriteLine($" Variation coefficient I: {p.VariationCoefficientI(inputImage1, intModifier)}");
+                    Console.WriteLine($"Variation coefficient I: {p.VariationCoefficientI(inputImage1, intModifier)}");
 
                     break;
                 case "--cflaco":
@@ -436,7 +472,7 @@ US: 1.4 (dot)
                     }
                     inputImage1 = LoadImage(arguments[2]);
 
-                    Console.WriteLine($" Flattening coefficient: {p.FlatteningCoefficient(inputImage1, intModifier)}");
+                    Console.WriteLine($"Flattening coefficient: {p.FlatteningCoefficient(inputImage1, intModifier)}");
                     break;
                 case "--cvarcoii":
                     if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
@@ -446,7 +482,7 @@ US: 1.4 (dot)
                     }
                     inputImage1 = LoadImage(arguments[2]);
 
-                    Console.WriteLine($" Variation coefficient II: {p.VariationCoefficientII(inputImage1, intModifier)}");
+                    Console.WriteLine($"Variation coefficient II: {p.VariationCoefficientII(inputImage1, intModifier)}");
                     break;
                 case "--centropy":
                     if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
@@ -456,7 +492,7 @@ US: 1.4 (dot)
                     }
                     inputImage1 = LoadImage(arguments[2]);
 
-                    Console.WriteLine($" Information source entropy: {p.InformationSourceEntropy(inputImage1, intModifier)}");
+                    Console.WriteLine($"Information source entropy: {p.InformationSourceEntropy(inputImage1, intModifier)}");
 
                     break;
                 case "--orobertsi":
@@ -468,7 +504,19 @@ US: 1.4 (dot)
                     inputImage1 = LoadImage(arguments[2]);
                     outputPicture = p.RobertsOperationI(LoadImage(arguments[2]));
 
-                    SaveOutput(inputImage1, outputPicture, "Roberts operation I");
+                    SaveOutput(inputImage1, outputPicture, "orobertsi");
+
+                    break;
+                case "--osobel":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Sobel(LoadImage(arguments[2]));
+
+                    SaveOutput(inputImage1, outputPicture, "orobertsi");
 
                     break;
                 case "--mdila":
@@ -479,9 +527,61 @@ US: 1.4 (dot)
                     }
 
                     inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Dilation(LoadImage(arguments[2]), intModifier);
+
+                    SaveOutput(inputImage1, outputPicture, "mdila");
+
+                    break;
+                case "--mero":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Erosion(LoadImage(arguments[2]), intModifier);
+
+                    SaveOutput(inputImage1, outputPicture, "mero");
+
+                    break;
+                case "--mopen":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Opening(LoadImage(arguments[2]), intModifier);
+
+                    SaveOutput(inputImage1, outputPicture, "mopen");
+
+                    break;
+                case "--mclos":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Closing(LoadImage(arguments[2]), intModifier);
+
+                    SaveOutput(inputImage1, outputPicture, "mclos");
+
+                    break;
+                case "--mhmt":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
                     outputPicture = p.HitOrMiss(LoadImage(arguments[2]), intModifier);
 
-                    SaveImage(outputPicture, "./dupa.png");
+                    SaveOutput(inputImage1, outputPicture, "mhmt");
 
                     break;
                 case "--help":
