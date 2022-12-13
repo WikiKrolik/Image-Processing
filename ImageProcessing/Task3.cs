@@ -187,6 +187,28 @@ namespace ImageProcessing
             return erodedImage;
         }
 
+        public Bitmap Intersection(Bitmap image1, Bitmap image2)
+        {
+            int height = image1.Height;
+            int width = image1.Width;
+
+            Bitmap result = new Bitmap(width, height);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (image1.GetPixel(x,y) == image2.GetPixel(x, y) && image2.GetPixel(x, y).R == 0)
+                    {
+                        result.SetPixel(x, y, image1.GetPixel(x, y));
+                    }
+                    else
+                        result.SetPixel(x, y,Color.FromArgb(255, 255, 255));
+                }
+            }
+            return result;
+        }
+
         public Bitmap Opening(Bitmap image, int structuralElementVariant)
         {
             return Dilation(Erosion(image, structuralElementVariant), structuralElementVariant);

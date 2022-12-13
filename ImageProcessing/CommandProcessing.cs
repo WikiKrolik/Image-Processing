@@ -584,6 +584,20 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "mhmt");
 
                     break;
+                case "--intersection":
+                    if (arguments.Length != 4)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+                    inputImage2 = LoadImage(arguments[3]);
+                    outputPicture = p.Intersection(LoadImage(arguments[2]), LoadImage(arguments[3]));
+
+                    SaveOutput(inputImage1, outputPicture, "intersection");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time
