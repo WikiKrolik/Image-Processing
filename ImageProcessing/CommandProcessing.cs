@@ -598,6 +598,18 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "intersection");
 
                     break;
+                case "--complement":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.Complement(LoadImage(arguments[2]));
+
+                    SaveOutput(inputImage1, outputPicture, "complement");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time

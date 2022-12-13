@@ -209,6 +209,25 @@ namespace ImageProcessing
             return result;
         }
 
+        public Bitmap Complement(Bitmap image)
+        {
+            int height = image.Height;
+            int width = image.Width;
+
+            Bitmap result = new Bitmap(width, height);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel = image.GetPixel(x, y);
+                    int newPixel = 255 - pixel.R;
+                    result.SetPixel(x, y, Color.FromArgb(newPixel, newPixel, newPixel));
+                }
+            }
+            return result;
+        }
+
         public Bitmap Opening(Bitmap image, int structuralElementVariant)
         {
             return Dilation(Erosion(image, structuralElementVariant), structuralElementVariant);
