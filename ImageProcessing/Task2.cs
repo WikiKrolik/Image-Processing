@@ -464,7 +464,54 @@ namespace ImageProcessing
             return processedImage;
         }
 
+        public Bitmap Uolis(Bitmap image)
+        {
+            double NormalizationFactor = 255;
+            Bitmap processedImage = new Bitmap(image.Width, image.Height);
+            for (int x = 0; x < image.Width; x++)
+            {
+                for (int y = 0; y < image.Height; y++)
+                {
 
+                    if (y == image.Height - 1 || x == image.Width - 1 || y == 0 || x == 0)
+                    {
+                        image.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                        continue;
+                    }
+                    Color pixelColor = image.GetPixel(x, y);
+
+                    Color a1 = image.GetPixel(x - 1, y);
+                    if (a1.R == 0) image.SetPixel(x - 1, y, Color.FromArgb(1, a1.B, a1.G));
+                    if (a1.B == 0) image.SetPixel(x - 1, y, Color.FromArgb(a1.R, 1, a1.G));
+                    if (a1.G == 0) image.SetPixel(x - 1, y, Color.FromArgb(a1.R, a1.B, 1));
+                    Color a2 = image.GetPixel(x, y + 1);
+                    if (a2.R == 0) image.SetPixel(x, y + 1, Color.FromArgb(1, a2.B, a2.G));
+                    if (a2.B == 0) image.SetPixel(x, y + 1, Color.FromArgb(a2.R, 1, a2.G));
+                    if (a2.G == 0) image.SetPixel(x, y + 1, Color.FromArgb(a2.R, a2.B, 1));
+                    Color a3 = image.GetPixel(x + 1, y);
+                    if (a3.R == 0) image.SetPixel(x + 1, y, Color.FromArgb(1, a3.B, a3.G));
+                    if (a3.B == 0) image.SetPixel(x + 1, y, Color.FromArgb(a3.R, 1, a3.G));
+                    if (a3.G == 0) image.SetPixel(x + 1, y, Color.FromArgb(a3.R, a3.B, 1));
+                    Color a4 = image.GetPixel(x, y - 1);
+                    if (a4.R == 0) image.SetPixel(x, y - 1, Color.FromArgb(1, a4.B, a4.G));
+                    if (a4.B == 0) image.SetPixel(x, y - 1, Color.FromArgb(a4.R, 1, a4.G));
+                    if (a4.G == 0) image.SetPixel(x, y - 1, Color.FromArgb(a4.R, a4.B, 1));
+
+                    double log = 0.25 * (Math.Log10(((double)(Math.Pow(pixelColor.R, 4))) / (double)(a1.R * a2.R * a3.R * a4.R)));
+                    int pixel = 10 * (int)((double)Math.Abs(log) * (255 / (double)(Math.Log10(255))));
+                    //int pixel = (int)(Math.Pow(10, Math.Abs(log)));
+                    //Console.WriteLine(pixel);
+                    // double pixel = Math.Pow(Math.Pow(pixelColor.R - image.GetPixel(x + 1, y + 1).R, 2) + Math.Pow(image.GetPixel(x, y + 1).R - image.GetPixel(x + 1, y).R, 2), 0.5);
+                    //double pixel = Math.Pow(Math.Pow(pixelColor.R - image.GetPixel(x + 1, y + 1).R, 2) + Math.Pow(image.GetPixel(x, y + 1).R - image.GetPixel(x + 1, y).R, 2), 0.5);
+                    pixel = Math.Clamp(pixel, 0, 255);
+
+                    processedImage.SetPixel(x, y, Color.FromArgb(pixel, pixel, pixel));
+                }
+            }
+
+            return processedImage;
+
+        }
         public double Mean(Bitmap image, int channel)
         {
             int[] histogramValues = Histogram(image, channel);
