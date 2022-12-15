@@ -209,6 +209,30 @@ namespace ImageProcessing
             return result;
         }
 
+        public Bitmap Sum(Bitmap image1, Bitmap image2)
+        {
+            int height = image1.Height;
+            int width = image1.Width;
+
+            Bitmap result = new Bitmap(width, height);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (image1.GetPixel(x, y).R == 0 || image2.GetPixel(x, y).R == 0)
+                    {
+                        result.SetPixel(x, y, image1.GetPixel(x, y));
+                    }
+                    else 
+                    {
+                        result.SetPixel(x, y, Color.FromArgb(255, 255, 255));
+                    }
+                        
+                }
+            }
+            return result;
+        }
         public Bitmap Complement(Bitmap image)
         {
             int height = image.Height;
