@@ -294,5 +294,32 @@ namespace ImageProcessing
 
             return transformedImage;
         }
+
+        public Bitmap M2(Bitmap image, int structuralElementVariant, int x, int y)
+        {
+            int width = image.Width;
+            int height = image.Height;
+
+            Bitmap result = new Bitmap(image.Width, image.Height);
+            Bitmap pom;
+
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                    result.SetPixel(j, i, Color.FromArgb(255, 255, 255));
+            }
+
+            result.SetPixel(x, y, image.GetPixel(x,y));
+
+           
+            do
+            {
+                pom = result;
+                result = Intersection(Dilation(pom, structuralElementVariant), Complement(image));
+
+            } while (pom != result);
+
+            return Sum(result, image);
+        }
     }
 }
