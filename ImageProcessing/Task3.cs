@@ -198,12 +198,13 @@ namespace ImageProcessing
             {
                 for (int x = 0; x < width; x++)
                 {
-                    if (image1.GetPixel(x,y) == image2.GetPixel(x, y) && image2.GetPixel(x, y).R == 0)
+                    if (image1.GetPixel(x,y).R == 255 && image2.GetPixel(x, y).R == 255)
                     {
-                        result.SetPixel(x, y, image1.GetPixel(x, y));
+                        result.SetPixel(x, y, Color.White);
                     }
-                    else
-                        result.SetPixel(x, y,Color.FromArgb(255, 255, 255));
+                    else { 
+                        result.SetPixel(x, y, Color.Black);
+                    }
                 }
             }
             return result;
@@ -220,13 +221,13 @@ namespace ImageProcessing
             {
                 for (int x = 0; x < width; x++)
                 {
-                    if (image1.GetPixel(x, y).R == 0 || image2.GetPixel(x, y).R == 0)
+                    if (image1.GetPixel(x, y).R == 0 && image2.GetPixel(x, y).R == 0)
                     {
-                        result.SetPixel(x, y, image1.GetPixel(x, y));
+                        result.SetPixel(x, y, Color.Black);
                     }
                     else 
                     {
-                        result.SetPixel(x, y, Color.FromArgb(255, 255, 255));
+                        result.SetPixel(x, y, Color.White);
                     }
                         
                 }
@@ -295,31 +296,55 @@ namespace ImageProcessing
             return transformedImage;
         }
 
+        public bool Comparison(Bitmap image1, Bitmap image2)
+        {
+            if (image1.Width != image2.Width || image1.Height != image2.Height)
+            {
+                return false;
+            }
+
+
+            for (int x = 0; x < image1.Width; x++)
+            {
+                for (int y = 0; y < image1.Height; y++)
+                {
+                    Color color1 = image1.GetPixel(x, y);
+                    Color color2 = image2.GetPixel(x, y);
+
+                    if (color1.R != color2.R || color1.G != color2.G || color1.B != color2.B)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         public Bitmap M2(Bitmap image, int structuralElementVariant, int x, int y)
         {
             int width = image.Width;
             int height = image.Height;
 
-            Bitmap result = new Bitmap(image.Width, image.Height);
-            Bitmap pom;
+            int iteration = 1;
 
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
-                    result.SetPixel(j, i, Color.FromArgb(255, 255, 255));
-            }
+            Bitmap result = new Bitmap(width, height);
+            Bitmap previousResult;
+            Bitmap imageComplement = Complement(image);
 
-            result.SetPixel(x, y, image.GetPixel(x,y));
 
-           
+            result.SetPixel(x, y, Color.White);
+
             do
             {
-                pom = result;
-                result = Intersection(Dilation(pom, structuralElementVariant), Complement(image));
+                previousResult = (Bitmap)result.Clone();
+                result = Intersection(Dilation(previousResult, structuralElementVariant), imageComplement);
 
-            } while (pom != result);
+                Console.WriteLine($"Iteration {iteration++}");
 
-            return Sum(result, image);
+            } while (!Comparison(result, previousResult));
+
+            return Sum(image, result);
         }
     }
 }

@@ -96,6 +96,9 @@ namespace ImageProcessing
 --osobel <path:string> <channel:int>
   Sobel operation
 
+--m2 <path:string> <maskVariant:int> <x:int> <y:int>
+  M2 iterative operation of filling
+
 Remember that the float needs to be passed accordingly to your system localization, e.g.:
 POL: 1,4 (comma)
 US: 1.4 (dot)
@@ -133,6 +136,7 @@ US: 1.4 (dot)
 
             int intModifier = 0;
             int intModifier2 = 0;
+            int intModifier3 = 0;
             float floatModifier = 0;
 
             Bitmap inputImage1;
@@ -608,6 +612,18 @@ US: 1.4 (dot)
                     outputPicture = p.Complement(LoadImage(arguments[2]));
 
                     SaveOutput(inputImage1, outputPicture, "complement");
+
+                    break;
+                case "--m2":
+                    if (arguments.Length != 6 || !Int32.TryParse(arguments[3], out intModifier) || !Int32.TryParse(arguments[4], out intModifier2) || !Int32.TryParse(arguments[4], out intModifier3))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.M2(LoadImage(arguments[2]), intModifier, intModifier2, intModifier3);
+
+                    SaveOutput(inputImage1, outputPicture, "m2-filling");
 
                     break;
                 case "--help":
