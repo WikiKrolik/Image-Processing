@@ -99,6 +99,9 @@ namespace ImageProcessing
 --m2 <path:string> <maskVariant:int> <x:int> <y:int>
   M2 iterative operation of filling
 
+--rgrow <path:string> <x:int> <y:int> <threshold:int> <neighborhoodVariant:int> <shouldBeOverlayed:int>
+  Region growing
+
 Remember that the float needs to be passed accordingly to your system localization, e.g.:
 POL: 1,4 (comma)
 US: 1.4 (dot)
@@ -137,6 +140,8 @@ US: 1.4 (dot)
             int intModifier = 0;
             int intModifier2 = 0;
             int intModifier3 = 0;
+            int intModifier4 = 0;
+            int intModifier5 = 0;
             float floatModifier = 0;
 
             Bitmap inputImage1;
@@ -615,7 +620,7 @@ US: 1.4 (dot)
 
                     break;
                 case "--m2":
-                    if (arguments.Length != 6 || !Int32.TryParse(arguments[3], out intModifier) || !Int32.TryParse(arguments[4], out intModifier2) || !Int32.TryParse(arguments[4], out intModifier3))
+                    if (arguments.Length != 6 || !Int32.TryParse(arguments[3], out intModifier) || !Int32.TryParse(arguments[4], out intModifier2) || !Int32.TryParse(arguments[5], out intModifier3))
                     {
                         Console.WriteLine(invalidMessage);
                         return;
@@ -627,10 +632,21 @@ US: 1.4 (dot)
 
                     break;
                 case "--rgrow":
+                    if (arguments.Length != 8 
+                        || !Int32.TryParse(arguments[3], out intModifier)
+                        || !Int32.TryParse(arguments[4], out intModifier2)
+                        || !Int32.TryParse(arguments[5], out intModifier3)
+                        || !Int32.TryParse(arguments[6], out intModifier4)
+                        || !Int32.TryParse(arguments[7], out intModifier5)
+                        )
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
                     inputImage1 = LoadImage(arguments[2]);
                     int[] array = { 1 };
 
-                    outputPicture = p.RegionGrowing(LoadImage(arguments[2]), 100, 100, 20);
+                    outputPicture = p.RegionGrowing(LoadImage(arguments[2]), intModifier, intModifier2, intModifier3, intModifier4, intModifier5);
                     SaveImage(outputPicture, "reggrow.bmp");
 
                     // SaveOutput(inputImage1, outputPicture, "m2-filling");

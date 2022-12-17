@@ -347,9 +347,14 @@ namespace ImageProcessing
             return Sum(image, result);
         }
 
-        public Bitmap RegionGrowing(Bitmap image, int x, int y, int threshold)
+        public Bitmap RegionGrowing(Bitmap image, int x, int y, int threshold, int neigborhoodType, int shouldBeOverlayed)
         {
             Bitmap result = new Bitmap(image.Width, image.Height);
+
+            if (shouldBeOverlayed == 1)
+            {
+                result = (Bitmap)image.Clone();
+            }
 
             Queue<Point> queue = new Queue<Point>();
             bool[,] processed = new bool[image.Width, image.Height];
@@ -369,10 +374,27 @@ namespace ImageProcessing
                     {
                         result.SetPixel(point.X, point.Y, Color.White);
 
-                        queue.Enqueue(new Point(point.X - 1, point.Y));
-                        queue.Enqueue(new Point(point.X, point.Y + 1));
-                        queue.Enqueue(new Point(point.X, point.Y - 1));
-                        queue.Enqueue(new Point(point.X + 1, point.Y));
+                        switch (neigborhoodType)
+                        {
+                            case 0:
+                                queue.Enqueue(new Point(point.X - 1, point.Y));
+                                queue.Enqueue(new Point(point.X, point.Y + 1));
+                                queue.Enqueue(new Point(point.X, point.Y - 1));
+                                queue.Enqueue(new Point(point.X + 1, point.Y));
+
+                                break;
+                            case 1:
+                                queue.Enqueue(new Point(point.X - 1, point.Y));
+                                queue.Enqueue(new Point(point.X, point.Y + 1));
+                                queue.Enqueue(new Point(point.X, point.Y - 1));
+                                queue.Enqueue(new Point(point.X + 1, point.Y));
+                                queue.Enqueue(new Point(point.X - 1, point.Y - 1));
+                                queue.Enqueue(new Point(point.X - 1, point.Y + 1));
+                                queue.Enqueue(new Point(point.X + 1, point.Y - 1));
+                                queue.Enqueue(new Point(point.X + 1, point.Y + 1));
+
+                                break;
+                        }
                     }
                 }
             }
