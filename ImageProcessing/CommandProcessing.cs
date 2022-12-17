@@ -626,6 +626,16 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "m2-filling");
 
                     break;
+                case "--rgrow":
+                    inputImage1 = LoadImage(arguments[2]);
+                    int[] array = { 1 };
+
+                    outputPicture = p.RegionGrowing(LoadImage(arguments[2]), 100, 100, 20);
+                    SaveImage(outputPicture, "reggrow.bmp");
+
+                    // SaveOutput(inputImage1, outputPicture, "m2-filling");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time

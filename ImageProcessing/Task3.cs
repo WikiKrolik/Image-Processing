@@ -346,5 +346,38 @@ namespace ImageProcessing
 
             return Sum(image, result);
         }
+
+        public Bitmap RegionGrowing(Bitmap image, int x, int y, int threshold)
+        {
+            Bitmap result = new Bitmap(image.Width, image.Height);
+
+            Queue<Point> queue = new Queue<Point>();
+            bool[,] processed = new bool[image.Width, image.Height];
+            queue.Enqueue(new Point(x, y));
+
+            int minViableValue = Math.Clamp(image.GetPixel(x, y).R - threshold, 0, 255);
+            int maxViableValue = Math.Clamp(image.GetPixel(x, y).R + threshold, 0, 255);
+
+            while (queue.Count > 0)
+            {
+                Point point = queue.Dequeue();
+                if (point.X >= 0 && point.X < image.Width && point.Y >= 0 && point.Y < image.Height && !processed[point.X, point.Y])
+                {
+                    processed[point.X, point.Y] = true;
+
+                    if (image.GetPixel(point.X, point.Y).R >= minViableValue && image.GetPixel(point.X, point.Y).R < maxViableValue)
+                    {
+                        result.SetPixel(point.X, point.Y, Color.White);
+
+                        queue.Enqueue(new Point(point.X - 1, point.Y));
+                        queue.Enqueue(new Point(point.X, point.Y + 1));
+                        queue.Enqueue(new Point(point.X, point.Y - 1));
+                        queue.Enqueue(new Point(point.X + 1, point.Y));
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }
