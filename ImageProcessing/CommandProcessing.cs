@@ -156,7 +156,7 @@ US: 1.4 (dot)
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            var memoryBefore = System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64;
+            var memoryBefore = System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize;
 
             switch (arguments[1])
             {
@@ -644,12 +644,8 @@ US: 1.4 (dot)
                         return;
                     }
                     inputImage1 = LoadImage(arguments[2]);
-                    int[] array = { 1 };
-
                     outputPicture = p.RegionGrowing(LoadImage(arguments[2]), intModifier, intModifier2, intModifier3, intModifier4, intModifier5);
-                    SaveImage(outputPicture, "reggrow.bmp");
-
-                    // SaveOutput(inputImage1, outputPicture, "m2-filling");
+                    SaveOutput(inputImage1, outputPicture, "reggrow");
 
                     break;
                 case "--help":
@@ -661,7 +657,7 @@ US: 1.4 (dot)
             }
 
             stopwatch.Stop();
-            var memoryAfter = System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64;
+            var memoryAfter = System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize;
 
             Console.WriteLine("Elapsed time: {0} ms", stopwatch.ElapsedMilliseconds);
             Console.WriteLine("Memory usage: {0} MB", Math.Round((decimal)(memoryAfter - memoryBefore) / 1024 / 1024, 2));
