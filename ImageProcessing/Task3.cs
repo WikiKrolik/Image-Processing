@@ -158,16 +158,13 @@ namespace ImageProcessing
 
         public Bitmap Erosion(Bitmap image, int structuralElementVariant)
         {
-            Bitmap erodedImage = AddPaddding(image, 0);
+            Bitmap erodedImage = new Bitmap(image.Width, image.Height);
 
             for (int x = 1; x < image.Width - 1; x++)
             {
                 for (int y = 1; y < image.Height - 1; y++)
                 {
-                    if (image.GetPixel(x, y) != Color.Black)
-                    {
-                        continue;
-                    }
+                    bool isFullyContained = true;
 
                     for (int maskX = -1; maskX < 2; maskX++)
                     {
@@ -178,8 +175,17 @@ namespace ImageProcessing
                                 continue;
                             }
 
-                            erodedImage.SetPixel(x + maskX, y + maskY, Color.Black);
+                            if (structuralElements[structuralElementVariant, maskY + 1, maskX + 1] * 255 != image.GetPixel(maskX + x, maskY + y).R)
+                            {
+                                isFullyContained = false;
+                                break;
+                            }
                         }
+                    }
+
+                    if (isFullyContained)
+                    {
+                        erodedImage.SetPixel(x, y, Color.White);
                     }
                 }
             }
