@@ -7,46 +7,75 @@ namespace ImageProcessing
     internal partial class ImageProcessing
     {
         // Fourier transforms in frequency domain
-        public List<List<Complex>> SlowFourierTransform(Bitmap image)
+        public List<List<Complex>> SlowFourierTransform(Bitmap image) 
         {
-            List<List<Complex>> temp = new List<List<Complex>>();
-            List<List<Complex>> result = new List<List<Complex>>();
+            Complex[,] result = new Complex[image.Height, image.Width];
+            Complex[,] temp = new Complex[image.Height, image.Width];
 
-            for (int y = 0; y < image.Height; y++)
+            for (int row = 0; row < image.Height; row++)
             {
-                List<Complex> row = new List<Complex>(image.Width);
-                temp.Add(row);
-
-                for (int x = 0; x < image.Width; x++)
+                for (int k = 0; k < image.Width; k++)
                 {
                     Complex sum = new Complex(0.0, 0.0);
 
-                    for (int xx = 0; xx < image.Width; xx++)
+                    for (int n = 0; n < image.Width; n++)
                     {
-                        Complex comp = new Complex(Math.Cos(2 * Math.PI * xx * x / image.Width), -Math.Sin(2 * Math.PI * xx * x / image.Width));
-                        sum = Complex.Add(sum, Complex.Multiply((double)image.GetPixel(xx, y).R, comp));
+                        Complex W = new Complex(Math.Cos(2 * Math.PI * n * k / image.Width), -Math.Sin(2 * Math.PI * n * k / image.Width));
+                        sum = sum + image.GetPixel(n, row).R * W;
                     }
 
-                    temp[y].Add(sum);
+                    temp[row, k] = sum;
                 }
             }
 
-            for (int y = 0; y < image.Height; y++)
+            for (int col = 0; col < image.Width; col++)
             {
-                List<Complex> col = new List<Complex>(image.Width);
-                result.Add(col);
-
-                for (int x = 0; x < image.Width; x++)
+                for (int k = 0; k < image.Height; k++)
                 {
                     Complex sum = new Complex(0.0, 0.0);
 
-                    for (int yy = 0; yy < image.Width; yy++)
+                    for (int n = 0; n < image.Height; n++)
                     {
-                        Complex comp = new Complex(Math.Cos(2 * Math.PI * yy * y / image.Width), -Math.Sin(2 * Math.PI * yy * y / image.Width));
-                        sum = Complex.Add(sum, Complex.Multiply((double)image.GetPixel(yy, x).R, comp));
+                        Complex W = new Complex(Math.Cos(2 * Math.PI * n * k / image.Height), -Math.Sin(2 * Math.PI * n * k / image.Height));
+                        sum = sum + temp[n, col] * W;
                     }
 
-                    result[y].Add(sum);
+                    result[k, col] = sum;
+                }
+            }
+
+            return Enumerable.Range(0, result.GetLength(0))
+            .Select(row => Enumerable.Range(0, result.GetLength(1))
+            .Select(col => result[row, col]).ToList()).ToList();
+        }
+
+        public List<List<Complex>> SwapQuarters(List<List<Complex>> list)
+        {
+            List<List<Complex>> result = new List<List<Complex>>();
+
+            for (int x = 0; x < list.Count; x++)
+            {
+                List<Complex> column = new List<Complex>();
+
+                for (int y = 0; y < list[0].Count; y++)
+                {
+                    column.Add(list[x][y]);
+                }
+
+                result.Add(column);
+            }
+
+            for (int x = 0; x < list.Count / 2; x++)
+            {
+                for (int y = 0; y < list[0].Count / 2; y++)
+                {
+                    Complex temp = new Complex(result[x][y].Real, result[x][y].Imaginary);
+                    result[x][y] = result[list.Count / 2 + x][list[0].Count / 2 + y];
+                    result[list.Count / 2 + x][list[0].Count / 2 + y] = temp;
+
+                    temp = new Complex(result[list.Count / 2 + x][y].Real, result[list.Count / 2 + x][y].Imaginary);
+                    result[list.Count / 2 + x][y] = result[x][list[0].Count / 2 + y];
+                    result[x][list[0].Count / 2 + y] = temp;
                 }
             }
 
@@ -78,12 +107,12 @@ namespace ImageProcessing
         public Bitmap VisualizationFourierSpectrum(List<List<Complex>> image)
         {
             Bitmap visualizationImage = new Bitmap(image[0].Count, image.Count);
-
+            
             for (int x = 0; x < image[0].Count; x++)
             {
                 for (int y = 0; y < image.Count; y++)
                 {
-                    int calculatedColor = (int)Math.Clamp(Math.Log(Math.Abs(image[x][y].Magnitude * 15.0)) * 10, 0, 255);
+                    int calculatedColor = (int)Math.Clamp(Math.Log(Math.Abs(image[y][x].Magnitude )) * 10, 0, 255);
 
                     visualizationImage.SetPixel(x, y, Color.FromArgb(1, calculatedColor, calculatedColor, calculatedColor));
                 }
