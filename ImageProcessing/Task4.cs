@@ -82,9 +82,70 @@ namespace ImageProcessing
             return result;
         }
 
+        private List<Complex> FastFourierTransform1D (List<Complex> list)
+        {
+            if (list.Count == 1)
+            {
+                return list;
+            }
+
+            List<Complex> result = new List<Complex>(list.Count);
+
+            List<Complex> even = new List<Complex>(list.Count / 2);
+            List<Complex> odd = new List<Complex>(list.Count / 2);
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                even.Add(list[2 * i]);
+                odd.Add(list[2 * i + 1]);
+            }
+
+            even = FastFourierTransform1D(even);
+            odd = FastFourierTransform1D(odd);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                result.Add(0);
+            }
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), -Math.Sin(2 * Math.PI * i / list.Count));
+                result[i] = even[i] + number * odd[i];
+                result[i + list.Count / 2] = even[i] - number * odd[i];
+            }
+
+            return result;
+        }
+
         public List<List<Complex>> FastFourierTransform(Bitmap image)
         {
             List<List<Complex>> result = new List<List<Complex>>();
+            List<List<Complex>> temp = new List<List<Complex>>();
+
+            for (int row = 0; row < image.Height; row++)
+            {
+                List<Complex> rowData = new List<Complex>();
+
+                for (int x = 0; x < image.Width; x++)
+                {
+                    rowData.Add(image.GetPixel(x, row).R);
+                }
+
+                temp.Add(FastFourierTransform1D(rowData));
+            }
+
+            for (int col = 0; col < image.Width; col++)
+            {
+                List<Complex> colData = new List<Complex>();
+
+                for (int y = 0; y < image.Height; y++)
+                {
+                    colData.Add(temp[y][col]);
+                }
+
+                result.Add(FastFourierTransform1D(colData));
+            }
 
             return result;
         }
