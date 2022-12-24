@@ -92,8 +92,42 @@ namespace ImageProcessing
         public Bitmap InverseSlowFourierTransform(List<List<Complex>> result)
         {
             Bitmap outputImage = new Bitmap(result[0].Count, result.Count);
+            Complex[,] temp = new Complex[outputImage.Height, outputImage.Width];
 
-            return outputImage;
+            for (int col = 0; col < outputImage.Width; col++)
+            {
+                for (int k = 0; k < outputImage.Height; k++)
+                {
+                    Complex sum = new Complex(0.0, 0.0);
+
+                    for (int n = 0; n < outputImage.Height; n++)
+                    {
+                        Complex W = new Complex(Math.Cos(2 * Math.PI * n * k / outputImage.Height), -Math.Sin(2 * Math.PI * n * k / outputImage.Height));
+                        sum = sum + result[n][col] * W;
+                    }
+
+                    temp[k, col] = sum / (double)outputImage.Height;
+                }
+            }
+
+            for (int row = 0; row < outputImage.Height; row++)
+            {
+                for (int k = 0; k < outputImage.Width; k++)
+                {
+                    Complex sum = new Complex(0.0, 0.0);
+
+                    for (int n = 0; n < outputImage.Width; n++)
+                    {
+                        Complex W = new Complex(Math.Cos(2 * Math.PI * n * k / outputImage.Width), -Math.Sin(2 * Math.PI * n * k / outputImage.Width));
+                        sum = sum + temp[row, n] * W;
+                    }
+
+                    int calculatedColor = (int)Math.Clamp(sum.Magnitude / outputImage.Width, 0, 255);
+                    outputImage.SetPixel(k, row, Color.FromArgb(1, calculatedColor, calculatedColor, calculatedColor));
+                }
+            }
+
+            return DiagonalFlip(outputImage);
         }
 
         public Bitmap InverseFastFourierTransform(List<List<Complex>> result)
