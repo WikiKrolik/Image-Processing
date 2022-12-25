@@ -102,6 +102,18 @@ namespace ImageProcessing
 --rgrow <path:string> <x:int> <y:int> <threshold:int> <neighborhoodVariant:int> <shouldBeOverlayed:int>
   Region growing
 
+--slowdft <path:string>
+  Slow DFT - generates a spectrum of transformation
+
+--fastdft <path:string>
+  Fast DFT - generates a spectrum of transformation
+
+--slowidft <path:string>
+  Performs slow DFT, and on the result performs slow IDFT - to show the input and output is the same
+
+--fastidft <path:string>
+  Performs fast DFT, and on the result performs fast IDFT - to show the input and output is the same
+
 Remember that the float needs to be passed accordingly to your system localization, e.g.:
 POL: 1,4 (comma)
 US: 1.4 (dot)
