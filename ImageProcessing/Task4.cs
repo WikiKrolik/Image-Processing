@@ -301,16 +301,44 @@ namespace ImageProcessing
         // Filters in frequency domain
         public Bitmap LowpassFilter(Bitmap image, int threshold)
         {
-            Bitmap transformedImage = new Bitmap(image.Width, image.Height);
+            List<List<Complex>> result = FastFourierTransform(image);
 
-            return transformedImage;
+            for (int x = 0; x < result.Count; x++)
+            {
+                for (int y = 0; y < result[0].Count; y++)
+                {
+                    double distance = Math.Sqrt(Math.Pow(x - result.Count / 2.0, 2) + Math.Pow(y - result[0].Count / 2.0, 2));
+
+                    // if is above the threshold, set to 0
+                    if (distance > threshold)
+                    {
+                        result[x][y] = new Complex(0, 0);
+                    }
+                }
+            }
+
+            return InverseFastFourierTransform(result);
         }
 
         public Bitmap HighpassFilter(Bitmap image, int threshold)
         {
-            Bitmap transformedImage = new Bitmap(image.Width, image.Height);
+            List<List<Complex>> result = FastFourierTransform(image);
 
-            return transformedImage;
+            for (int x = 0; x < result.Count; x++)
+            {
+                for (int y = 0; y < result[0].Count; y++)
+                {
+                    double distance = Math.Sqrt(Math.Pow(x - result.Count / 2.0, 2) + Math.Pow(y - result[0].Count / 2.0, 2));
+
+                    // if is below the threshold, set to 0
+                    if (distance < threshold)
+                    {
+                        result[x][y] = new Complex(0, 0);
+                    }
+                }
+            }
+
+            return InverseFastFourierTransform(result);
         }
 
         public Bitmap BandpassFilter(Bitmap image, int threshold, int width)
