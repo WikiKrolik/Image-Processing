@@ -184,16 +184,99 @@ namespace ImageProcessing
                     }
 
                     int calculatedColor = (int)Math.Clamp(sum.Magnitude / outputImage.Width, 0, 255);
-                    outputImage.SetPixel(k, row, Color.FromArgb(1, calculatedColor, calculatedColor, calculatedColor));
+                    // x and y are shifted by 1 to fix image position problem
+                    outputImage.SetPixel(
+                        (k - 1 + outputImage.Width) % outputImage.Width,
+                        (row - 1 + outputImage.Height) % outputImage.Height,
+                        Color.FromArgb(1, calculatedColor, calculatedColor, calculatedColor)
+                        );
                 }
             }
 
             return DiagonalFlip(outputImage);
         }
 
+        private List<Complex> InverseFastFourierTransform1D(List<Complex> list)
+        {
+            if (list.Count == 1)
+            {
+                return list;
+            }
+
+            List<Complex> result = new List<Complex>(list.Count);
+
+            List<Complex> even = new List<Complex>(list.Count / 2);
+            List<Complex> odd = new List<Complex>(list.Count / 2);
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                even.Add(list[2 * i]);
+                odd.Add(list[2 * i + 1]);
+            }
+
+            even = InverseFastFourierTransform1D(even);
+            odd = InverseFastFourierTransform1D(odd);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                result.Add(0);
+            }
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), Math.Sin(2 * Math.PI * i / list.Count));
+                result[i] = even[i] + number * odd[i];
+                result[i + list.Count / 2] = even[i] - number * odd[i];
+            }
+
+            return result;
+        }
+
         public Bitmap InverseFastFourierTransform(List<List<Complex>> result)
         {
             Bitmap outputImage = new Bitmap(result[0].Count, result.Count);
+            List<List<Complex>> temp = new List<List<Complex>>();
+
+            for (int x = 0; x < outputImage.Height; x++)
+            {
+                temp.Add(new List<Complex>());
+            }
+
+            for (int y = 0; y < outputImage.Height; y++)
+            {
+                List<Complex> rowData = new List<Complex>();
+
+                for (int x = 0; x < outputImage.Width; x++)
+                {
+                    rowData.Add(result[y][x]);
+                }
+
+                rowData = InverseFastFourierTransform1D(rowData);
+
+                for (int x = 0; x < outputImage.Width; x++)
+                {
+                    temp[y].Add(rowData[x] / outputImage.Width);
+                }
+            }
+
+            for (int x = 0; x < outputImage.Width; x++)
+            {
+                List<Complex> colData = new List<Complex>();
+
+                for (int y = 0; y < outputImage.Width; y++)
+                {
+                    colData.Add(temp[y][x]);
+                }
+
+                colData = InverseFastFourierTransform1D(colData);
+
+                for (int y = 0; y < outputImage.Height; y++)
+                {
+                    int calculatedColor = (int)Math.Clamp(Math.Abs(colData[y].Magnitude / outputImage.Width), 0, 255);
+                    outputImage.SetPixel(x, y, Color.FromArgb(1, calculatedColor, calculatedColor, calculatedColor));
+                }
+
+            }
 
             return outputImage;
         }
