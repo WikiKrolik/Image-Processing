@@ -172,6 +172,9 @@ namespace ImageProcessing
                 }
             }
 
+            outputImage = VerticalFlip(outputImage);
+            outputImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+
             return outputImage;
         }
 

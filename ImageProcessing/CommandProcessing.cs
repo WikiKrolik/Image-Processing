@@ -703,11 +703,33 @@ US: 1.4 (dot)
                         return;
                     }
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.VerticalFlip(p.InverseFastFourierTransform(p.FastFourierTransform(LoadImage(arguments[2]))));
-
-                    outputPicture.RotateFlip(RotateFlipType.Rotate90FlipNone);
-
+                    outputPicture = p.InverseFastFourierTransform(p.FastFourierTransform(LoadImage(arguments[2])));
+                    
                     SaveOutput(inputImage1, outputPicture, "fast-idft-visualization");
+
+                    break;
+                case "--lpf":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.LowpassFilter(LoadImage(arguments[2]), intModifier);
+
+                    SaveOutput(inputImage1, outputPicture, "low-pass-filter");
+
+                    break;
+                case "--hpf":
+                    if (arguments.Length != 4 || !Int32.TryParse(arguments[3], out intModifier))
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.HighpassFilter(LoadImage(arguments[2]), intModifier);
+
+                    SaveOutput(inputImage1, outputPicture, "high-pass-filter");
 
                     break;
                 case "--help":
