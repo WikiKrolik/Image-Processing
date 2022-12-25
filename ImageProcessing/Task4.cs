@@ -49,75 +49,6 @@ namespace ImageProcessing
             .Select(col => result[row, col]).ToList()).ToList();
         }
 
-        public List<List<Complex>> SwapQuarters(List<List<Complex>> list)
-        {
-            List<List<Complex>> result = new List<List<Complex>>();
-
-            for (int x = 0; x < list.Count; x++)
-            {
-                List<Complex> column = new List<Complex>();
-
-                for (int y = 0; y < list[0].Count; y++)
-                {
-                    column.Add(list[x][y]);
-                }
-
-                result.Add(column);
-            }
-
-            for (int x = 0; x < list.Count / 2; x++)
-            {
-                for (int y = 0; y < list[0].Count / 2; y++)
-                {
-                    Complex temp = new Complex(result[x][y].Real, result[x][y].Imaginary);
-                    result[x][y] = result[list.Count / 2 + x][list[0].Count / 2 + y];
-                    result[list.Count / 2 + x][list[0].Count / 2 + y] = temp;
-
-                    temp = new Complex(result[list.Count / 2 + x][y].Real, result[list.Count / 2 + x][y].Imaginary);
-                    result[list.Count / 2 + x][y] = result[x][list[0].Count / 2 + y];
-                    result[x][list[0].Count / 2 + y] = temp;
-                }
-            }
-
-            return result;
-        }
-
-        private List<Complex> FastFourierTransform1D (List<Complex> list)
-        {
-            if (list.Count == 1)
-            {
-                return list;
-            }
-
-            List<Complex> result = new List<Complex>(list.Count);
-
-            List<Complex> even = new List<Complex>(list.Count / 2);
-            List<Complex> odd = new List<Complex>(list.Count / 2);
-
-            for (int i = 0; i < list.Count / 2; i++)
-            {
-                even.Add(list[2 * i]);
-                odd.Add(list[2 * i + 1]);
-            }
-
-            even = FastFourierTransform1D(even);
-            odd = FastFourierTransform1D(odd);
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                result.Add(0);
-            }
-
-            for (int i = 0; i < list.Count / 2; i++)
-            {
-                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), -Math.Sin(2 * Math.PI * i / list.Count));
-                result[i] = even[i] + number * odd[i];
-                result[i + list.Count / 2] = even[i] - number * odd[i];
-            }
-
-            return result;
-        }
-
         public List<List<Complex>> FastFourierTransform(Bitmap image)
         {
             List<List<Complex>> result = new List<List<Complex>>();
@@ -196,42 +127,6 @@ namespace ImageProcessing
             return DiagonalFlip(outputImage);
         }
 
-        private List<Complex> InverseFastFourierTransform1D(List<Complex> list)
-        {
-            if (list.Count == 1)
-            {
-                return list;
-            }
-
-            List<Complex> result = new List<Complex>(list.Count);
-
-            List<Complex> even = new List<Complex>(list.Count / 2);
-            List<Complex> odd = new List<Complex>(list.Count / 2);
-
-            for (int i = 0; i < list.Count / 2; i++)
-            {
-                even.Add(list[2 * i]);
-                odd.Add(list[2 * i + 1]);
-            }
-
-            even = InverseFastFourierTransform1D(even);
-            odd = InverseFastFourierTransform1D(odd);
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                result.Add(0);
-            }
-
-            for (int i = 0; i < list.Count / 2; i++)
-            {
-                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), Math.Sin(2 * Math.PI * i / list.Count));
-                result[i] = even[i] + number * odd[i];
-                result[i + list.Count / 2] = even[i] - number * odd[i];
-            }
-
-            return result;
-        }
-
         public Bitmap InverseFastFourierTransform(List<List<Complex>> result)
         {
             Bitmap outputImage = new Bitmap(result[0].Count, result.Count);
@@ -275,13 +170,117 @@ namespace ImageProcessing
                     int calculatedColor = (int)Math.Clamp(Math.Abs(colData[y].Magnitude / outputImage.Width), 0, 255);
                     outputImage.SetPixel(x, y, Color.FromArgb(1, calculatedColor, calculatedColor, calculatedColor));
                 }
-
             }
 
             return outputImage;
         }
 
+        private List<Complex> FastFourierTransform1D(List<Complex> list)
+        {
+            if (list.Count == 1)
+            {
+                return list;
+            }
+
+            List<Complex> result = new List<Complex>(list.Count);
+
+            List<Complex> even = new List<Complex>(list.Count / 2);
+            List<Complex> odd = new List<Complex>(list.Count / 2);
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                even.Add(list[2 * i]);
+                odd.Add(list[2 * i + 1]);
+            }
+
+            even = FastFourierTransform1D(even);
+            odd = FastFourierTransform1D(odd);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                result.Add(0);
+            }
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), -Math.Sin(2 * Math.PI * i / list.Count));
+                result[i] = even[i] + number * odd[i];
+                result[i + list.Count / 2] = even[i] - number * odd[i];
+            }
+
+            return result;
+        }
+
+        private List<Complex> InverseFastFourierTransform1D(List<Complex> list)
+        {
+            if (list.Count == 1)
+            {
+                return list;
+            }
+
+            List<Complex> result = new List<Complex>(list.Count);
+
+            List<Complex> even = new List<Complex>(list.Count / 2);
+            List<Complex> odd = new List<Complex>(list.Count / 2);
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                even.Add(list[2 * i]);
+                odd.Add(list[2 * i + 1]);
+            }
+
+            even = InverseFastFourierTransform1D(even);
+            odd = InverseFastFourierTransform1D(odd);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                result.Add(0);
+            }
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), Math.Sin(2 * Math.PI * i / list.Count));
+                result[i] = even[i] + number * odd[i];
+                result[i + list.Count / 2] = even[i] - number * odd[i];
+            }
+
+            return result;
+        }
+
         // Visualization of Fourier spectrum
+        public List<List<Complex>> SwapQuarters(List<List<Complex>> list)
+        {
+            List<List<Complex>> result = new List<List<Complex>>();
+
+            for (int x = 0; x < list.Count; x++)
+            {
+                List<Complex> column = new List<Complex>();
+
+                for (int y = 0; y < list[0].Count; y++)
+                {
+                    column.Add(list[x][y]);
+                }
+
+                result.Add(column);
+            }
+
+            for (int x = 0; x < list.Count / 2; x++)
+            {
+                for (int y = 0; y < list[0].Count / 2; y++)
+                {
+                    Complex temp = new Complex(result[x][y].Real, result[x][y].Imaginary);
+                    result[x][y] = result[list.Count / 2 + x][list[0].Count / 2 + y];
+                    result[list.Count / 2 + x][list[0].Count / 2 + y] = temp;
+
+                    temp = new Complex(result[list.Count / 2 + x][y].Real, result[list.Count / 2 + x][y].Imaginary);
+                    result[list.Count / 2 + x][y] = result[x][list[0].Count / 2 + y];
+                    result[x][list[0].Count / 2 + y] = temp;
+                }
+            }
+
+            return result;
+        }
+
         public Bitmap VisualizationFourierSpectrum(List<List<Complex>> image)
         {
             Bitmap visualizationImage = new Bitmap(image[0].Count, image.Count);
