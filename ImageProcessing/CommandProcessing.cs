@@ -648,6 +648,56 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "reggrow");
 
                     break;
+                case "--slowdft":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.VisualizationFourierSpectrum(p.SwapQuarters(p.SlowFourierTransform(LoadImage(arguments[2]))));
+
+                    SaveOutput(inputImage1, outputPicture, "slow-dft-visualization");
+
+                    break;
+                case "--slowidft":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.InverseSlowFourierTransform(p.SlowFourierTransform(LoadImage(arguments[2])));
+                    
+                    SaveOutput(inputImage1, outputPicture, "slow-idft-visualization");
+
+                    break;
+                case "--fastdft":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.VisualizationFourierSpectrum(p.SwapQuarters(p.FastFourierTransform(LoadImage(arguments[2]))));
+
+                    SaveOutput(inputImage1, outputPicture, "fast-dft-visualization");
+
+                    break;
+                case "--fastidft":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.VerticalFlip(p.InverseFastFourierTransform(p.FastFourierTransform(LoadImage(arguments[2]))));
+
+                    outputPicture.RotateFlip(RotateFlipType.Rotate90FlipNone);
+
+                    SaveOutput(inputImage1, outputPicture, "fast-idft-visualization");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time
