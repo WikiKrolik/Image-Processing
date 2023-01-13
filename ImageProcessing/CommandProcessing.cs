@@ -732,6 +732,19 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "high-pass-filter");
 
                     break;
+                case "--hpfwed":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.HighpassFilterWithEdgeDetection(LoadImage(arguments[2]), LoadImage("./masks/F5mask2.bmp"));
+
+                    SaveOutput(inputImage1, outputPicture, "high-pass-filter-w-edge-detection");
+
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time

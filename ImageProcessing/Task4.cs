@@ -358,11 +358,25 @@ namespace ImageProcessing
             return transformedImage;
         }
 
-        public Bitmap HighpassFilterWithEdgeDetection(Bitmap image, double alpha, double beta, double radius)
+        public Bitmap HighpassFilterWithEdgeDetection(Bitmap image, Bitmap mask)
         {
-            Bitmap transformedImage = new Bitmap(image.Width, image.Height);
+            List<List<Complex>> fourierImage = FastFourierTransform(image);
+            
+            float scaleX = (float)image.Width / (float)mask.Width;
+            float scaleY = (float)image.Height / (float)mask.Height;
 
-            return transformedImage;
+            for (int x = 0; x < fourierImage.Count; x++)
+            {
+                for (int y = 0; y < fourierImage[0].Count; y++)
+                {
+                    if (mask.GetPixel((int)(x / scaleX), (int)(y / scaleY)).R == 0)
+                    {
+                        fourierImage[y][x] = new Complex(0, 0);
+                    }
+                }
+            }
+
+            return InverseFastFourierTransform(fourierImage);
         }
 
         public Bitmap PhaseModyfingFilter(Bitmap image, double k, double l)
