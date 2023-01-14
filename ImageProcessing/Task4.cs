@@ -344,12 +344,6 @@ namespace ImageProcessing
             return InverseFastFourierTransform(result);
         }
 
-        public Bitmap BandpassFilter(Bitmap image, int threshold, int width)
-        {
-            Bitmap transformedImage = new Bitmap(image.Width, image.Height);
-
-            return transformedImage;
-        }
 
         public Bitmap BandcutFilter(Bitmap image, int threshold, int width)
         {
@@ -377,6 +371,12 @@ namespace ImageProcessing
             }
 
             return InverseFastFourierTransform(fourierImage);
+        }
+
+        public Bitmap BandPassFilter(Bitmap image, int HTreshold, int LTreshold)
+        {
+            Bitmap trasnformedImage = HighpassFilter(LowpassFilter(image, LTreshold), HTreshold);
+            return trasnformedImage;
         }
 
         public Bitmap PhaseModyfingFilter(Bitmap image, double k, double l)
