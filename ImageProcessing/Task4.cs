@@ -313,7 +313,7 @@ namespace ImageProcessing
                     double distance = Math.Sqrt(Math.Pow(x - result.Count / 2.0, 2) + Math.Pow(y - result[0].Count / 2.0, 2));
 
                     // if is above the threshold, set to 0
-                    if (distance > threshold)
+                    if (distance < threshold)
                     {
                         result[x][y] = new Complex(0, 0);
                     }
@@ -334,7 +334,7 @@ namespace ImageProcessing
                     double distance = Math.Sqrt(Math.Pow(x - result.Count / 2.0, 2) + Math.Pow(y - result[0].Count / 2.0, 2));
 
                     // if is below the threshold, set to 0
-                    if (distance < threshold)
+                    if (distance > threshold)
                     {
                         result[x][y] = new Complex(0, 0);
                     }
