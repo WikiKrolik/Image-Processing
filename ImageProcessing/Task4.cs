@@ -345,11 +345,24 @@ namespace ImageProcessing
         }
 
 
-        public Bitmap BandcutFilter(Bitmap image, int threshold, int width)
+        public Bitmap BandcutFilter(Bitmap image, int HTreshold, int LTreshold)
         {
-            Bitmap transformedImage = new Bitmap(image.Width, image.Height);
+            List<List<Complex>> result = FastFourierTransform(image);
 
-            return transformedImage;
+            for (int x = 0; x < result.Count; x++)
+            {
+                for (int y = 0; y < result[0].Count; y++)
+                {
+                    double distance = Math.Sqrt(Math.Pow(x - result.Count / 2.0, 2) + Math.Pow(y - result[0].Count / 2.0, 2));
+
+                    // if is below the threshold, set to 0
+                    if (distance >= HTreshold && distance <= LTreshold) 
+                    {
+                        result[x][y] = new Complex(0, 0);
+                    }
+                }
+            }
+            return InverseFastFourierTransform(result);
         }
 
         public Bitmap HighpassFilterWithEdgeDetection(Bitmap image, Bitmap mask)
