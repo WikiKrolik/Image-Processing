@@ -733,14 +733,15 @@ US: 1.4 (dot)
 
                     break;
                 case "--hpfwed":
-                    if (arguments.Length != 3)
+                    if (arguments.Length != 4)
                     {
                         Console.WriteLine(invalidMessage);
                         return;
                     }
 
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.HighpassFilterWithEdgeDetection(LoadImage(arguments[2]), LoadImage("./masks/F5mask2.bmp"));
+                    inputImage2 = LoadImage($"./masks/F5mask{arguments[3]}.bmp");
+                    outputPicture = p.HighpassFilterWithEdgeDetection(LoadImage(arguments[2]), inputImage2);
 
                     SaveOutput(inputImage1, outputPicture, "high-pass-filter-w-edge-detection");
 
