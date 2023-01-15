@@ -776,7 +776,21 @@ US: 1.4 (dot)
 
                     SaveOutput(inputImage1, outputPicture, "bandcut_filter");
                     break;
+                case "--pmf":
+                    if (arguments.Length != 5
+                        || !Int32.TryParse(arguments[3], out intModifier)
+                        || !Int32.TryParse(arguments[4], out intModifier2)
+                        )
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
 
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.PhaseModyfingFilter(LoadImage(arguments[2]), intModifier, intModifier2);
+
+                    SaveOutput(inputImage1, outputPicture, "phase_modifying_filter");
+                    break;
                 case "--help":
                     Console.WriteLine(helpMessage);
                     break; // return to prevent showing elapsed time

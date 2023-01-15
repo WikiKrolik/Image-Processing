@@ -395,8 +395,30 @@ namespace ImageProcessing
         public Bitmap PhaseModyfingFilter(Bitmap image, double k, double l)
         {
             Bitmap transformedImage = new Bitmap(image.Width, image.Height);
+             
+            Complex[,] mask = new Complex[image.Width, image.Height];
+            Complex a = new Complex(0, 1);
+            
+            for (int i = 0; i < image.Height; i++)
+            {   
+                for (int j = 0; j < image.Width; j++)
+                {
+                    mask[i,j] = Complex.Exp(a * (((-1) * (i * k * 2 * Math.PI) / image.Height) + ((-1) * (j * l * 2 * Math.PI) / image.Width) + (k + l) * Math.PI));
+                }
+            }
 
-            return transformedImage;
+            List<List<Complex>> fourierImage = FastFourierTransform(image);
+
+            for (int i = 0; i < image.Height; i++)
+            {
+                for (int j = 0; j < image.Width; j++)
+                {
+                    fourierImage[i][j] *= mask[i, j];
+                }
+            }
+
+
+            return InverseFastFourierTransform(fourierImage);
         }
     }
 }
