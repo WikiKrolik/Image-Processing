@@ -470,7 +470,7 @@ namespace ImageProcessing
                 }
             }
 
-            List<List<Complex>> fourierImage = FastFourierTransform(image);
+            List<List<Complex>> fourierImage = FFTFrequency(image);
 
             for (int i = 0; i < image.Height; i++)
             {
