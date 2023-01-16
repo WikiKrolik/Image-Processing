@@ -684,16 +684,28 @@ US: 1.4 (dot)
                     SaveOutput(inputImage1, outputPicture, "slow-idft-visualization");
 
                     break;
-                case "--fastdft":
+                case "--fastdfts":
                     if (arguments.Length != 3)
                     {
                         Console.WriteLine(invalidMessage);
                         return;
                     }
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.VisualizationFourierSpectrum(p.SwapQuarters(p.FastFourierTransform(LoadImage(arguments[2]))));
+                    outputPicture = p.VisualizationFourierSpectrum(p.SwapQuarters(p.FFTSpatial(LoadImage(arguments[2]))));
 
-                    SaveOutput(inputImage1, outputPicture, "fast-dft-visualization");
+                    SaveOutput(inputImage1, outputPicture, "fast-dft-spatial-visualization");
+
+                    break;
+                case "--fastdftf":
+                    if (arguments.Length != 3)
+                    {
+                        Console.WriteLine(invalidMessage);
+                        return;
+                    }
+                    inputImage1 = LoadImage(arguments[2]);
+                    outputPicture = p.VisualizationFourierSpectrum(p.SwapQuarters(p.FFTFrequency(LoadImage(arguments[2]))));
+
+                    SaveOutput(inputImage1, outputPicture, "fast-dft-frequency-visualization");
 
                     break;
                 case "--fastidft":
@@ -703,7 +715,7 @@ US: 1.4 (dot)
                         return;
                     }
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.InverseFastFourierTransform(p.FastFourierTransform(LoadImage(arguments[2])));
+                    outputPicture = p.InverseFastFourierTransform(p.FFTFrequency(LoadImage(arguments[2])));
                     
                     SaveOutput(inputImage1, outputPicture, "fast-idft-visualization");
 

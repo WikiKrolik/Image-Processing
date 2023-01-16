@@ -49,7 +49,7 @@ namespace ImageProcessing
             .Select(col => result[row, col]).ToList()).ToList();
         }
 
-        public List<List<Complex>> FastFourierTransform(Bitmap image)
+        public List<List<Complex>> FFTSpatial(Bitmap image)
         {
             List<List<Complex>> result = new List<List<Complex>>();
             List<List<Complex>> temp = new List<List<Complex>>();
@@ -63,7 +63,7 @@ namespace ImageProcessing
                     rowData.Add(image.GetPixel(x, row).R);
                 }
 
-                temp.Add(FastFourierTransform1D(rowData));
+                temp.Add(FFT1DSpatial(rowData));
             }
 
             for (int col = 0; col < image.Width; col++)
@@ -75,7 +75,39 @@ namespace ImageProcessing
                     colData.Add(temp[y][col]);
                 }
 
-                result.Add(FastFourierTransform1D(colData));
+                result.Add(FFT1DSpatial(colData));
+            }
+
+            return result;
+        }
+
+        public List<List<Complex>> FFTFrequency(Bitmap image)
+        {
+            List<List<Complex>> result = new List<List<Complex>>();
+            List<List<Complex>> temp = new List<List<Complex>>();
+
+            for (int row = 0; row < image.Height; row++)
+            {
+                List<Complex> rowData = new List<Complex>();
+
+                for (int x = 0; x < image.Width; x++)
+                {
+                    rowData.Add(image.GetPixel(x, row).R);
+                }
+
+                temp.Add(FFT1DFrequency(rowData));
+            }
+
+            for (int col = 0; col < image.Width; col++)
+            {
+                List<Complex> colData = new List<Complex>();
+
+                for (int y = 0; y < image.Height; y++)
+                {
+                    colData.Add(temp[y][col]);
+                }
+
+                result.Add(FFT1DFrequency(colData));
             }
 
             return result;
@@ -178,7 +210,7 @@ namespace ImageProcessing
             return outputImage;
         }
 
-        private List<Complex> FastFourierTransform1D(List<Complex> list)
+        private List<Complex> FFT1DSpatial(List<Complex> list)
         {
             if (list.Count == 1)
             {
@@ -196,8 +228,8 @@ namespace ImageProcessing
                 odd.Add(list[2 * i + 1]);
             }
 
-            even = FastFourierTransform1D(even);
-            odd = FastFourierTransform1D(odd);
+            even = FFT1DSpatial(even);
+            odd = FFT1DSpatial(odd);
 
             for (int i = 0; i < list.Count; i++)
             {
@@ -209,6 +241,37 @@ namespace ImageProcessing
                 Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), -Math.Sin(2 * Math.PI * i / list.Count));
                 result[i] = even[i] + number * odd[i];
                 result[i + list.Count / 2] = even[i] - number * odd[i];
+            }
+
+            return result;
+        }
+
+        private List<Complex> FFT1DFrequency(List<Complex> list)
+        {
+            if (list.Count == 1)
+            {
+                return list;
+            }
+
+            List<Complex> result = new List<Complex>();
+
+            List<Complex> even = new List<Complex>(list.Count / 2);
+            List<Complex> odd = new List<Complex>(list.Count / 2);
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), -Math.Sin(2 * Math.PI * i / list.Count));
+                even.Add(list[i] + list[i + list.Count / 2]);
+                odd.Add((list[i] - list[i + list.Count / 2]) * number);
+            }
+
+            even = FFT1DSpatial(even);
+            odd = FFT1DSpatial(odd);
+
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                result.Add(even[i]);
+                result.Add(odd[i]);
             }
 
             return result;
@@ -304,7 +367,7 @@ namespace ImageProcessing
         // Filters in frequency domain
         public Bitmap LowpassFilter(Bitmap image, int threshold)
         {
-            List<List<Complex>> result = FastFourierTransform(image);
+            List<List<Complex>> result = FFTFrequency(image);
 
             for (int x = 0; x < result.Count; x++)
             {
@@ -325,7 +388,7 @@ namespace ImageProcessing
 
         public Bitmap HighpassFilter(Bitmap image, int threshold)
         {
-            List<List<Complex>> result = FastFourierTransform(image);
+            List<List<Complex>> result = FFTFrequency(image);
 
             for (int x = 0; x < result.Count; x++)
             {
@@ -344,10 +407,9 @@ namespace ImageProcessing
             return InverseFastFourierTransform(result);
         }
 
-
         public Bitmap BandcutFilter(Bitmap image, int HTreshold, int LTreshold)
         {
-            List<List<Complex>> result = FastFourierTransform(image);
+            List<List<Complex>> result = FFTFrequency(image);
 
             for (int x = 0; x < result.Count; x++)
             {
@@ -362,12 +424,13 @@ namespace ImageProcessing
                     }
                 }
             }
+
             return InverseFastFourierTransform(result);
         }
 
         public Bitmap HighpassFilterWithEdgeDetection(Bitmap image, Bitmap mask)
         {
-            List<List<Complex>> fourierImage = FastFourierTransform(image);
+            List<List<Complex>> fourierImage = FFTFrequency(image);
             
             float scaleX = (float)image.Width / (float)mask.Width;
             float scaleY = (float)image.Height / (float)mask.Height;
