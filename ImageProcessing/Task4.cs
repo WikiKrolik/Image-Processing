@@ -159,7 +159,7 @@ namespace ImageProcessing
             return DiagonalFlip(outputImage);
         }
 
-        public Bitmap InverseFastFourierTransform(List<List<Complex>> result)
+        public Bitmap IFFTFrequency(List<List<Complex>> result)
         {
             Bitmap outputImage = new Bitmap(result[0].Count, result.Count);
             List<List<Complex>> temp = new List<List<Complex>>();
@@ -178,7 +178,7 @@ namespace ImageProcessing
                     rowData.Add(result[y][x]);
                 }
 
-                rowData = InverseFastFourierTransform1D(rowData);
+                rowData = IFFT1DFrequency(rowData);
 
                 for (int x = 0; x < outputImage.Width; x++)
                 {
@@ -195,7 +195,7 @@ namespace ImageProcessing
                     colData.Add(temp[y][x]);
                 }
 
-                colData = InverseFastFourierTransform1D(colData);
+                colData = IFFT1DFrequency(colData);
 
                 for (int y = 0; y < outputImage.Height; y++)
                 {
@@ -277,37 +277,32 @@ namespace ImageProcessing
             return result;
         }
 
-        private List<Complex> InverseFastFourierTransform1D(List<Complex> list)
+        private List<Complex> IFFT1DFrequency(List<Complex> list)
         {
             if (list.Count == 1)
             {
                 return list;
             }
 
-            List<Complex> result = new List<Complex>(list.Count);
+            List<Complex> result = new List<Complex>();
 
             List<Complex> even = new List<Complex>(list.Count / 2);
             List<Complex> odd = new List<Complex>(list.Count / 2);
 
             for (int i = 0; i < list.Count / 2; i++)
             {
-                even.Add(list[2 * i]);
-                odd.Add(list[2 * i + 1]);
+                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), Math.Sin(2 * Math.PI * i / list.Count));
+                even.Add(list[i] + list[i + list.Count / 2]);
+                odd.Add((list[i] - list[i + list.Count / 2]) * number);
             }
 
-            even = InverseFastFourierTransform1D(even);
-            odd = InverseFastFourierTransform1D(odd);
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                result.Add(0);
-            }
+            even = IFFT1DFrequency(even);
+            odd = IFFT1DFrequency(odd);
 
             for (int i = 0; i < list.Count / 2; i++)
             {
-                Complex number = new Complex(Math.Cos(2 * Math.PI * i / list.Count), Math.Sin(2 * Math.PI * i / list.Count));
-                result[i] = even[i] + number * odd[i];
-                result[i + list.Count / 2] = even[i] - number * odd[i];
+                result.Add(even[i]);
+                result.Add(odd[i]);
             }
 
             return result;
@@ -383,7 +378,7 @@ namespace ImageProcessing
                 }
             }
 
-            return InverseFastFourierTransform(result);
+            return IFFTFrequency(result);
         }
 
         public Bitmap HighpassFilter(Bitmap image, int threshold)
@@ -404,7 +399,7 @@ namespace ImageProcessing
                 }
             }
 
-            return InverseFastFourierTransform(result);
+            return IFFTFrequency(result);
         }
 
         public Bitmap BandcutFilter(Bitmap image, int HTreshold, int LTreshold)
@@ -425,7 +420,7 @@ namespace ImageProcessing
                 }
             }
 
-            return InverseFastFourierTransform(result);
+            return IFFTFrequency(result);
         }
 
         public Bitmap HighpassFilterWithEdgeDetection(Bitmap image, Bitmap mask)
@@ -446,7 +441,7 @@ namespace ImageProcessing
                 }
             }
 
-            return InverseFastFourierTransform(fourierImage);
+            return IFFTFrequency(fourierImage);
         }
 
         public Bitmap BandPassFilter(Bitmap image, int HTreshold, int LTreshold)
@@ -481,7 +476,7 @@ namespace ImageProcessing
             }
 
 
-            return InverseFastFourierTransform(fourierImage);
+            return IFFTFrequency(fourierImage);
         }
     }
 }

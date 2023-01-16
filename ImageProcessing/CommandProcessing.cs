@@ -715,7 +715,7 @@ US: 1.4 (dot)
                         return;
                     }
                     inputImage1 = LoadImage(arguments[2]);
-                    outputPicture = p.InverseFastFourierTransform(p.FFTFrequency(LoadImage(arguments[2])));
+                    outputPicture = p.IFFTFrequency(p.FFTFrequency(LoadImage(arguments[2])));
                     
                     SaveOutput(inputImage1, outputPicture, "fast-idft-visualization");
 
